@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGN UP</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <style>
+        body {
+            background: rgb(245,191,215);
+    background: radial-gradient(circle, rgba(245,191,215,1) 0%, rgba(177,210,238,1) 100%)
+            
+        }
+        .card {
+            background: rgba(33, 30, 36, 0.70);
+            border: none;
+            color: rgb(230, 230, 230);
+        }
+        .form-control {
+            background-color: #f7f7f7f1;
+            color: #ffffff;
+            border: 1px solid #444444;
+        }
+        .form-control::placeholder {
+            color: #2c2c2c;
+        }
+        .form-control:focus {
+            background-color: #f7f7f7f1;
+            color: #5a5a5a;
+            border-color: #ae1bcc;
+        }
+        .btn-primary {
+            background: rgb(233, 134, 172);
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: rgb(182, 76, 192);
+            transform: scale(1.1);
+            transition: 1s ease all;
+        }
+        .text-center {
+            color: #ffffff;
+        }
+        a{
+          color: white;
+          text-decoration: none;
+          font-size: 20px;
+        }
+
+        a:hover{
+            transform: scale(1.1);
+            transition: 1s ease all;
+        }
+    </style>
+</head>
+
+<body class="text-center">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card p-4 registro-card" style="width: 100%; max-width: 450px;">
+            <h2 class="text-center mb-4">SIGN UP</h2>
+                <div class="form-group">
+                    <label for="username">Nombre de Usuario</label>
+                    <input type="text" class="form-control" id="r_email" placeholder="Ingrese su nombre de usuario">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" class="form-control" id="r_password" placeholder="Ingrese su contraseña">
+                </div>
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" id="r_nombre" placeholder="Ingrese su nombre">
+                </div>
+                <br><br>
+
+                <button class="btn btn-primary mx-2" onclick="Registrar()">Registrarse</button><br><br>
+                <a href="index.html">Iniciar sesión</a>
+        </div>
+    </div>
+
+
+    <script src="assets/js/bootstrap.bundle.js"></script>
+    <script src="assets/js/sweetalert2.all.min.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

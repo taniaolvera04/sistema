@@ -1,0 +1,163 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #999;
+}
+
+ul {
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: #fff;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+.showcase {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  background: rgb(245,191,215);
+  background: radial-gradient(circle, rgba(245,191,215,1) 0%, rgba(177,210,238,1) 100%)
+    no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* text-align: center; */
+}
+
+.showcase-content {
+  position: relative;
+  z-index: 2;
+  width: 470px;
+  height: 470px;
+  background: rgba(33, 30, 36, 0.65);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  padding: 60px 60px;
+  border-radius: 16px;
+}
+
+.formm h1 {
+  margin-bottom: 20px;
+}
+
+.formm {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.formm .info {
+  padding: 5px 0;
+  margin-bottom: 20px;
+}
+
+.formm .info .in {
+  margin-bottom: 30px;
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  border: none;
+  padding: 20px;
+  font-size: inherit;
+}
+
+.formm .btn {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.btn-primary {
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  background: rgb(185, 135, 135);
+  color: #fff;
+  font-size: inherit;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 1px 0 rgba(116, 72, 72, 0.45);
+  margin-top: -60px;
+}
+
+.help {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+/*  input */
+
+
+
+#email{
+  background: #ffffff;
+  color: silver;
+}
+
+input[type="password"] {
+  background: #ffffff;
+  color: silver; 
+}
+
+/*  input end */
+
+.signup {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.signup p {
+  margin-right: 5px;
+}
+
+.more {
+  font-size: 0.8em;
+  line-height: 1.1em;
+}
+
+.more a {
+  color: rgb(17, 108, 228);
+}
+
+.more a:hover,
+.signup a:hover {
+  text-decoration: underline;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #496989;
+  border-radius: 10px;
+  border: 1px solid #496989;
+}
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
