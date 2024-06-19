@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'descripcion'=>"",
             'precio'=>"",
             'talla'=>"",
-            'cantidadp'=>"");
+            'cantidadp'=>"",);
             
             $idp=$_POST['idp'];
                 $sql="SELECT * FROM prendas WHERE id_p=$idp";
@@ -108,6 +108,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode($valido);
             
             break;
+
+            
+case "update":
+
+    $idp=$_POST['idp'];
+    $a=$_POST['nombrep'];
+    $b=$_POST['descripcion'];
+    $c=$_POST['precio'];
+    $d=$_POST['talla'];
+    $e=$_POST['cantidadp'];
+    $f=$_POST['fotop'];
+
+    $sql="UPDATE prendas SET nombrep='$a',
+    descripcion='$b',
+    precio='$c',
+    talla='$d',
+    cantidadp='$e',
+    fotop='$f'
+    WHERE id_p=$idp";
+
+    if($cx->query($sql)){
+       $valido['success']=true;
+       $valido['mensaje']="SE ACTUALIZÓ CORRECTAMENTE EL PRODUCTO";
+    }else{
+        $valido['success']=false;
+       $valido['mensaje']="ERROR AL ACTUALIZAR EN BD"; 
+    }
+    echo json_encode($valido);
+   break;
+
     }
 
 } else {

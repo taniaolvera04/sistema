@@ -146,7 +146,6 @@ const guardarPrendas = async () => {
 
 //TABLA PARA CARGAR PRENDAS Y BOTÓN QUE ABRE MODAL
 
-// Función para cargar prendas usando DataTables
 const cargarPrendas = async () => {
     const datos = new FormData();
     datos.append("action", "selectAll");
@@ -171,6 +170,8 @@ const cargarPrendas = async () => {
                     <th>TALLA</th>
                     <th>CANTIDAD</th>
                     <th>IMAGEN</th>
+                    <th>ID_PROV</th>
+                    <th>ID_C</th>
                     <th>ACTION</th>
                 </tr>
             </thead>
@@ -187,7 +188,9 @@ const cargarPrendas = async () => {
                 <td>${item[4]}</td>
                 <td>${item[5]}</td>
                 <td><img src="img_prendas/${item[6]}" height="90px"></td>
-                <td>
+                <td>${item[7]}</td>
+                <td>${item[8]}</td>
+                <td colspan="2">
                     <button class="btn btn-danger" onclick="eliminarPrenda(${item[0]})">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
@@ -287,31 +290,55 @@ const mostrarPrenda=async(idp)=>{
     document.querySelector("#eprecio").value=json.precio;
     document.querySelector("#etalla").value=json.talla;
     document.querySelector("#ecantidadp").value=json.cantidadp;
+    document.getElementById("eprenda-preview").src="img_prendas/"+json.fotop;
    
 }
 
 
-//MOSTRAR FOTO-PREVIEW EN MODAL EDITAR
+//ACTUALIZAR PRENDAS
 
-function cargarImagenActual(urlImagen) {
-    var imgPreview = document.getElementById('eprenda-preview');
-    imgPreview.src = urlImagen;
-}
-
-
-function previewEditedImage() {
-    var fileInput = document.getElementById('efotop');
-    var imgPreview = document.getElementById('eprenda-preview');
-
-    // Verificar si se seleccionó un archivo
-    if (fileInput.files && fileInput.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function(e) {
-            imgPreview.src = e.target.result;
+const actualizarPrendas = async () => {
+    var idp = document.querySelector("#idp").value;
+    var nombrep = document.querySelector("#enombrep").value;
+    var descripcion = document.querySelector("#edescripcion").value;
+    var precio = document.querySelector("#eprecio").value;
+    var talla = document.querySelector("#etalla").value;
+    var cantidadp = document.querySelector("#ecantidadp").value;
+    var fotop = document.querySelector("#fotop").files[0]; 
+    
+    if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || talla.trim() == "" || cantidadp.trim() == "") {
+        Swal.fire({
+            title: "ERROR",
+            text: "Tienes campos vacíos",
+            icon: "error"
+        });
+        return;
+    }
+    
+    let datos = new FormData();
+    datos.append("idp", idp);
+    datos.append("nombrep", nombrep);
+    datos.append("descripcion", descripcion);
+    datos.append("precio", precio);
+    datos.append("talla", talla);
+    datos.append("cantidadp", cantidadp);
+    datos.append("fotop", fotop); 
+    datos.append('action', 'update');
+    
+    try {
+        let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
+        let json = await respuesta.json();
+        
+        if (json.success == true) {
+            Swal.fire({ title: "¡ACTUALIZACIÓN ÉXITOSA!", text: json.mensaje, icon: "success" });
+        } else {
+            Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
         }
-
-        reader.readAsDataURL(fileInput.files[0]);
+        
+        cargarPrendas(); 
+    } catch (error) {
+        console.error('Error al actualizar la prenda:', error);
+        Swal.fire({ title: "ERROR", text: "Hubo un problema al procesar la solicitud", icon: "error" });
     }
 }
 
@@ -334,3 +361,28 @@ function previewImage() {
     }
 }
 
+
+// Función para mostrar la imagen seleccionada
+function mostrarImagen(event) {
+    var input = event.target; // Obtener el input file
+    var imagenPreview = document.getElementById('eprenda-preview');
+  
+    // Verificar si se seleccionó un archivo
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+  
+      reader.onload = function(e) {
+        // Mostrar la imagen previa y actualizar su src
+        imagenPreview.style.display = 'block';
+        imagenPreview.src = e.target.result;
+      }
+  
+      // Leer el archivo como una URL
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      // Si no se selecciona ningún archivo, ocultar la imagen previa
+      imagenPreview.style.display = 'none';
+      imagenPreview.src = '#';
+    }
+  }
+  
