@@ -1,7 +1,8 @@
 var action=document.getElementById("action");
 
-var btnCa=document.getElementById("btnCa");
+
 var btnPre=document.getElementById("btnPre");
+var btnCa=document.getElementById("btnCa");
 var btnUsu=document.getElementById("btnUsu");
 var btnPro=document.getElementById("btnPro");
 var btnDa=document.getElementById("btnDa");
@@ -87,6 +88,7 @@ const guardarPerfil=async()=>{
 
 
 
+
 //REGISTRAR PRENDAS Y UNA IMAGEN EN BASE DE DATOS
 
 const guardarPrendas = async () => {
@@ -96,8 +98,10 @@ const guardarPrendas = async () => {
     let talla = document.getElementById('talla').value;
     let cantidadp = document.getElementById('cantidadp').value;
     let fotop = document.getElementById('fotop').files[0]; 
+    let idc = document.getElementById('idc').value;
+    
 
-    if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || cantidadp.trim() == "" || talla.trim() == "" || !fotop) {
+    if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || cantidadp.trim() == "" || talla.trim() == "" || !fotop || idc.trim() == "" ) {
         Swal.fire({
             title: "ERROR",
             text: "Falta completar campos o seleccionar una imagen",
@@ -113,6 +117,7 @@ const guardarPrendas = async () => {
     datos.append("cantidadp", cantidadp);
     datos.append("talla", talla);
     datos.append("fotop", fotop); 
+    datos.append("idc", idc); 
     datos.append('action', 'guardar');
 
     try {
@@ -160,7 +165,7 @@ const cargarPrendas = async () => {
             Agregar Prenda
         </button><br>
 
-        <table id="tablaPrendas" class="table table-striped w-100 text-center">
+        <table id="tablaPrendas" class="table table-striped w-75 text-center">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -170,7 +175,6 @@ const cargarPrendas = async () => {
                     <th>TALLA</th>
                     <th>CANTIDAD</th>
                     <th>IMAGEN</th>
-                    <th>ID_PROV</th>
                     <th>ID_C</th>
                     <th>ACTION</th>
                 </tr>
@@ -189,7 +193,6 @@ const cargarPrendas = async () => {
                 <td>${item[5]}</td>
                 <td><img src="img_prendas/${item[6]}" height="90px"></td>
                 <td>${item[7]}</td>
-                <td>${item[8]}</td>
                 <td colspan="2">
                     <button class="btn btn-danger" onclick="eliminarPrenda(${item[0]})">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -291,6 +294,7 @@ const mostrarPrenda=async(idp)=>{
     document.querySelector("#etalla").value=json.talla;
     document.querySelector("#ecantidadp").value=json.cantidadp;
     document.getElementById("eprenda-preview").src="img_prendas/"+json.fotop;
+    document.querySelector("#eidc").value=json.idc;
    
 }
 
@@ -304,9 +308,10 @@ const actualizarPrendas = async () => {
     var precio = document.querySelector("#eprecio").value;
     var talla = document.querySelector("#etalla").value;
     var cantidadp = document.querySelector("#ecantidadp").value;
-    var fotop = document.querySelector("#fotop").files[0]; 
+    var fotop = document.querySelector("#efotop").files[0]; 
+    var idc = document.querySelector("#eidc").value;
     
-    if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || talla.trim() == "" || cantidadp.trim() == "") {
+    if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || talla.trim() == "" || cantidadp.trim() == ""  || idc.trim() == "") {
         Swal.fire({
             title: "ERROR",
             text: "Tienes campos vacíos",
@@ -322,6 +327,7 @@ const actualizarPrendas = async () => {
     datos.append("precio", precio);
     datos.append("talla", talla);
     datos.append("cantidadp", cantidadp);
+    datos.append("idc", idc);
     datos.append("fotop", fotop); 
     datos.append('action', 'update');
     
@@ -362,27 +368,309 @@ function previewImage() {
 }
 
 
-// Función para mostrar la imagen seleccionada
-function mostrarImagen(event) {
-    var input = event.target; // Obtener el input file
-    var imagenPreview = document.getElementById('eprenda-preview');
-  
-    // Verificar si se seleccionó un archivo
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-  
-      reader.onload = function(e) {
-        // Mostrar la imagen previa y actualizar su src
-        imagenPreview.style.display = 'block';
-        imagenPreview.src = e.target.result;
-      }
-  
-      // Leer el archivo como una URL
-      reader.readAsDataURL(input.files[0]);
-    } else {
-      // Si no se selecciona ningún archivo, ocultar la imagen previa
-      imagenPreview.style.display = 'none';
-      imagenPreview.src = '#';
+function epreviewImage() {
+    const fotoInput = document.getElementById('efotop');
+    const preview = document.getElementById('eprenda-preview');
+    
+    if (fotoInput.files && fotoInput.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block'; 
+        }
+
+        reader.readAsDataURL(fotoInput.files[0]); // Leer el archivo como URL
     }
-  }
-  
+}
+
+
+
+
+//METODOS PARA CATEGORIAS
+
+const cargarCategorias = async () => {
+    const datos = new FormData();
+    datos.append("action", "selectAllCa");
+    let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
+    let json = await respuesta.json();
+
+    let tablaHTML = `
+        <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addCa">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill mx-2" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+            </svg>
+            Agregar Categoria
+        </button><br>
+
+        <table id="tablaC" class="table table-striped w-75 text-center">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CATEGORÍA</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    json.data.forEach(item => {
+        tablaHTML += `
+            <tr>
+                <td>${item[0]}</td>
+                <td>${item[1]}</td>
+
+                <td colspan="2">
+                    <button class="btn btn-danger" onclick="eliminarC(${item[0]})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                        </svg>
+                    </button>
+                    <button class="btn btn-info" onclick="mostrarC(${item[0]})" data-bs-toggle="modal" data-bs-target="#editCa">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tablaHTML += `</tbody></table>`;
+
+    document.getElementById("action").innerHTML = tablaHTML;
+
+    if ($.fn.DataTable.isDataTable("#tablaC")) {
+        $("#tablaC").DataTable().destroy();
+    }
+
+    $("#tablaC").DataTable({
+        lengthMenu: [5, 10, 25, 50, 100],
+        language: {
+            lengthMenu: "Mostrar _MENU_ registros por página",
+            zeroRecords: "No se encontraron resultados",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "No hay registros disponibles",
+            infoFiltered: "(filtrados de _MAX_ registros totales)",
+            search: "Buscar:",
+            paginate: {
+                first: "Primero",
+                last: "Último",
+                next: "Siguiente",
+                previous: "Anterior"
+            }
+        }
+    });
+};
+
+btnCa.onclick = cargarCategorias;
+
+
+
+//GUARDAR CATEGORIA
+
+const guardarCategoria = async () => {
+    let nombrec = document.getElementById('nombrec').value;
+    
+
+    if (nombrec.trim() == "") {
+        Swal.fire({
+            title: "ERROR",
+            text: "CAMPO VACÍO",
+            icon: "error"
+        });
+        return;
+    }
+
+    let datos = new FormData();
+    datos.append("nombrec", nombrec); 
+    datos.append('action', 'guardarCa');
+
+        let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
+        let json = await respuesta.json();
+
+        if (json.success == true) {
+            Swal.fire({
+                title: "¡REGISTRO ÉXITOSO!",
+                text: json.mensaje,
+                icon: "success"
+            });
+            cargarCategorias();
+        } else {
+            Swal.fire({
+                title: "ERROR",
+                text: json.mensaje,
+                icon: "error"
+            });
+        }
+}
+
+
+
+//ELIMINAR CATEGORIAS
+
+const eliminarC = async (idCategoria) => {
+    Swal.fire({
+        title: "¿Estás seguro de eliminar esta categoría?",
+        icon: "question",
+        showDenyButton: true,
+        confirmButtonText: "Si, estoy seguro",
+        denyButtonText: "No estoy seguro"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+           
+            let formData = new FormData();
+            formData.append('idc', idCategoria); 
+            formData.append('action', 'deleteCa'); 
+
+            try {
+                let respuesta = await fetch("php/metodosA.php", {
+                    method: 'POST',
+                    body: formData
+                });
+
+                let json = await respuesta.json();
+
+                if (json.success) {
+                    Swal.fire({
+                        title: "¡Se eliminó con éxito!",
+                        text: json.mensaje,
+                        icon: "success"
+                    });
+                } else {
+                    Swal.fire({
+                        title: "ERROR",
+                        text: json.mensaje,
+                        icon: "error"
+                    });
+                }
+                cargarCategorias();
+            } catch (error) {
+                console.error('Error al eliminar categoría:', error);
+                Swal.fire({
+                    title: "ERROR",
+                    text: "Hubo un problema al eliminar la categoría.",
+                    icon: "error"
+                });
+            }
+        }
+    });
+}
+
+
+
+//MOSTRAR INFORMACIÓN DE CATEGORIA EN MODAL
+
+const mostrarC=async(idc)=>{
+    let datos=new FormData();
+    datos.append("idc",idc);
+    datos.append('action','selectCa');
+    
+    let respuesta=await fetch("php/metodosA.php",{method:'POST',body:datos});
+    let json=await respuesta.json();
+
+    document.querySelector("#idc").value=json.idc;
+    document.querySelector("#enombrec").value=json.nombrec;
+   
+}
+
+
+//ACTUALIZAR CATEGORÍAS
+const actualizarCategoria = async () => {
+    var idc = document.querySelector("#idc").value;
+    var nombrec = document.querySelector("#enombrec").value;
+    
+    if (nombrec.trim() == "") {
+        Swal.fire({
+            title: "ERROR",
+            text: "El nombre de categoría no puede estar vacío",
+            icon: "error"
+        });
+        return;
+    }
+    
+    let datos = new FormData();
+    datos.append("idc", idc);
+    datos.append("nombrec", nombrec); 
+    datos.append('action', 'updateCa');
+    try {
+        let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
+        let json = await respuesta.json();
+        
+        if (json.success == true) {
+            Swal.fire({ title: "¡ACTUALIZACIÓN ÉXITOSA!", text: json.mensaje, icon: "success" });
+        } else {
+            Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
+        }
+        
+        cargarCategorias(); 
+    } catch (error) {
+        console.error('Error al actualizar la categoría:', error);
+        Swal.fire({ title: "ERROR", text: "Hubo un problema al procesar la solicitud", icon: "error" });
+    }
+}    
+
+
+
+//MOSTRAR USUARIOS
+
+const mostrarUsu=async()=>{
+    const datos = new FormData();
+    datos.append("action", "selectAllUsu");
+    let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
+    let json = await respuesta.json();
+
+    let tablaHTML = `
+        <table id="tablaU" class="table table-striped w-75 text-center">
+            <thead>
+                <tr>
+                    <th>ID_U</th>
+                    <th>USUARIO</th>
+                    <th>PASSWORD</th>
+                    <th>NOMBRE</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    json.data.forEach(item => {
+        tablaHTML += `
+            <tr>
+                <td>${item[0]}</td>
+                <td>${item[1]}</td>
+                <td>${item[2]}</td>
+                <td>${item[3]}</td>
+            </tr>
+        `;
+    });
+
+    tablaHTML += `</tbody></table>`;
+
+    document.getElementById("action").innerHTML = tablaHTML;
+
+    if ($.fn.DataTable.isDataTable("#tablaC")) {
+        $("#tablaU").DataTable().destroy();
+    }
+
+    $("#tablaU").DataTable({
+        lengthMenu: [5, 10, 25, 50, 100],
+        language: {
+            lengthMenu: "Mostrar _MENU_ registros por página",
+            zeroRecords: "No se encontraron resultados",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "No hay registros disponibles",
+            infoFiltered: "(filtrados de _MAX_ registros totales)",
+            search: "Buscar:",
+            paginate: {
+                first: "Primero",
+                last: "Último",
+                next: "Siguiente",
+                previous: "Anterior"
+            }
+        }
+    });
+};
+
+
+btnUsu.onclick=mostrarUsu;
