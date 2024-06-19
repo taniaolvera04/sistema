@@ -6,14 +6,18 @@ if($_POST){
     $action=$_REQUEST['action'];
     switch($action){
         case "registrar":
+
             $valido['success']=array('success'=>false,'mensaje'=>"");            
             $a=$_POST['usuario'];
             $b=md5($_POST['password']);
             $c=$_POST['nombre'];
+            $tipo=$_POST['tipo'];
+
+
             $check="SELECT * FROM usuarios WHERE usuario='$a'";
             $res=$cx->query($check);
             if($res->num_rows==0){
-                $sql="INSERT INTO usuarios VALUES(null,'$a','$b','$c',null)";
+                $sql="INSERT INTO usuarios VALUES(null,'$a','$b','$c',null, '$tipo')";
                 if($cx->query($sql)){
                     $valido['success']=true;
                     $valido['mensaje']="SE REGISTRO CORRECTAMENTE";
@@ -28,22 +32,31 @@ if($_POST){
             echo json_encode($valido);
             break;
 
-        case "login": 
-            $valido['success']=array('success'=>false,'mensaje'=>"");            
-            $a=$_POST['usuario'];
-            $b=md5($_POST['password']);
-            $check="SELECT * FROM usuarios WHERE usuario='$a' AND password='$b';";
-            $res=$cx->query($check);
-            if($res->num_rows>0){
-                $valido['success']=true;
-                $valido['mensaje']="SE INICIO CORRECTAMENTE";
-            }else {
-                $valido['success']=false;
-                $valido['mensaje']="USUARIO Y/O PASSWORD INCORRECTO";
-            }           
-            echo json_encode($valido);
+       
+            case "login": 
+                $valido['success'] = array('success' => false, 'mensaje' => "");            
+                $a = $_POST['usuario'];
+                $b = md5($_POST['password']);
+                $check = "SELECT * FROM usuarios WHERE usuario='$a' AND password='$b';";
+                $res = $cx->query($check);
+                if ($res->num_rows > 0) {
+                    $row = $res->fetch_array();
+                    $valido['success'] = true;
+                    $valido['mensaje'] = "SE INICIÓ CORRECTAMENTE";
+                   
+                    if (isset($row['tipo'])) {
+                        $valido['tipo'] = $row['tipo'];
+                    } else {
+                        $valido['tipo'] = "cliente"; 
+                    }
+                } else {
+                    $valido['success'] = false;
+                    $valido['mensaje'] = "USUARIO Y/O CONTRASEÑA INCORRECTO";
+                }           
+                echo json_encode($valido);
+                break;
+            
 
-            break;
         case "select":
             header('Content-Type: text/html; charset=utf-8');
                 $valido['success']=array('success'=>false,'mensaje'=>"","foto"=>"");            

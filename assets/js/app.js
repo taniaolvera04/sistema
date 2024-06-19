@@ -1,7 +1,13 @@
 var sesion = localStorage.getItem('usuario') || "null";
 
   if (sesion != "null") {
-      window.location.href = "inicio.html";
+    let tipoUsuario = localStorage.getItem('tipoUsuario') || "cliente";
+
+    if (tipoUsuario === 'admin') {
+        window.location.href = 'admin.html';
+    } else {
+        window.location.href = 'cliente.html';
+    }
   }
 
   function validarCorreo(correo){
@@ -45,9 +51,16 @@ var sesion = localStorage.getItem('usuario') || "null";
     let respuesta = await fetch("php/loginUsuario.php",{method:'POST',body:datos});
     let json = await respuesta.json();
 
+    
     if (json.success == true) {
         localStorage.setItem("usuario", usuario);
-        window.location.href = "inicio.html";
+        localStorage.setItem("tipoUsuario", json.tipo);
+
+        if (json.tipo === 'admin') {
+            window.location.href = 'admin.html';
+        } else {
+            window.location.href = 'cliente.html';
+        }
     } else {
         Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
     }
@@ -60,6 +73,7 @@ var sesion = localStorage.getItem('usuario') || "null";
     let usuario = document.getElementById("r_email").value;
     let password = document.getElementById("r_password").value;
     let nombre = document.getElementById("r_nombre").value;
+    let tipo = document.getElementById("tipo").value;
 
 
     if (usuario.trim() == "" || password == "" || nombre == "") {
@@ -81,6 +95,7 @@ var sesion = localStorage.getItem('usuario') || "null";
     datos.append("usuario", usuario);
     datos.append("password", password);
     datos.append("nombre", nombre);
+    datos.append("tipo", tipo);
     datos.append('action', 'registrar');
 
     let respuesta = await fetch("php/loginUsuario.php",{method:'POST',body:datos});

@@ -629,6 +629,7 @@ const mostrarUsu=async()=>{
                     <th>USUARIO</th>
                     <th>PASSWORD</th>
                     <th>NOMBRE</th>
+                    <th>TIPO</th>
                 </tr>
             </thead>
             <tbody>
@@ -641,6 +642,7 @@ const mostrarUsu=async()=>{
                 <td>${item[1]}</td>
                 <td>${item[2]}</td>
                 <td>${item[3]}</td>
+                <td>${item[4]}</td>
             </tr>
         `;
     });
