@@ -6,6 +6,12 @@
     <title>INICIO</title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/inicio.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
 </head>
 
 <body class="text-center" onload="cargarNombre()">
@@ -29,43 +35,39 @@
                 </svg> </button>
             </span>
         </div>
-      </nav><br><br>
+      </nav><br>
 
 
-
-
-      <button class="btn btn-primary btn-block mx-2"> PRENDAS
+      <button class="btn btn-primary btn-block mx-2" id="btnPre"> PRENDAS
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-standing-dress" viewBox="0 0 16 16">
         <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 0 0 0 1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z"/>
       </svg>
     </button>
 
 
-      <button class="btn btn-primary btn-block mx-2"> CATEGORÍAS 
+      <button class="btn btn-primary btn-block mx-2" id="btnCa"> CATEGORÍAS 
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list-check" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/>
         </svg> 
     </button>
 
-      <button class="btn btn-primary btn-block mx-2"> USUARIOS 
+      <button class="btn btn-primary btn-block mx-2" id="btnUsu"> USUARIOS 
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
           <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
         </svg>
       </button>
 
-      <button class="btn btn-primary btn-block mx-2"> PROVEEDORES   
+      <button class="btn btn-primary btn-block mx-2" id="btnPro"> PROVEEDORES   
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-person-vcard-fill" viewBox="0 0 16 16">
           <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5M9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8m1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5m-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96q.04-.245.04-.5M7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0"/>
         </svg>
       </button>
 
-      <button class="btn btn-primary btn-block mx-2"> DASHBOARD  
+      <button class="btn btn-primary btn-block mx-2" id="btnDa"> DASHBOARD  
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
           <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z"/>
         </svg>
       </button>
-
-
 
 
 
@@ -88,8 +90,126 @@
   </div>
 
 
+<!--MODAL PARA AGREGAR UNA PRENDA-->
+  
+  <div class="modal fade" id="addPrenda" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-ls">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">AGREGAR PRENDAS</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-2">
+                    <label  class="form-label">NOMBRE DE PRENDA</label>
+                    <input type="text" class="form-control text-center" id="nombrep">
+                </div>
+                <div class="mb-2">
+                    <label  class="form-label">DESCRIPCIÓN</label>
+                   <textarea cols="4" rows="4" class="form-control" id="descripcion" ></textarea>
+                </div>
+                <div class="mb-2">
+                  <label  class="form-label">PRECIO</label>
+                  <input type="number" class="form-control text-center" id="precio">
+              </div>
+                <div class="mb-2">
+                    <label  class="form-label">TALLA</label>
+                    <input type="text" class="form-control text-center" id="talla">
+                </div>
+                <div class="mb-2">
+                  <label  class="form-label">CANTIDAD</label>
+                  <input type="number" class="form-control text-center" id="cantidadp">
+              </div>
+                <div>
+                    <label  class="form-label">FOTO</label>
+                    <input type="file" name="fotop" class="form-control" id="fotop" onchange="previewImage()">
+                    <img id="prenda-preview" src="#" style="max-width: 100%; max-height: 140px; display: none; margin: 0 auto;">
+                </div>
+            </form>                
+        </div>
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-success" onclick="guardarPrendas()">   GUARDAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 16 16">
+              <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>
+              <path d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>
+            </svg></button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">   CANCELAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+            </svg> </button>              
+        </div>
+        </div>
+    </div>
+</div> 
+
+
+
+<!--MODAL PARA EDITAR UNA PRENDA-->
+  
+<div class="modal fade" id="editPrenda" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-ls">
+      <div class="modal-content">
+      <div class="modal-header">
+          <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">ACTUALIZAR PRENDAS</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form>
+              <div class="mb-2">
+                  <label  class="form-label">NOMBRE DE PRENDA</label>
+                  <input type="text" class="form-control text-center" id="enombrep">
+              </div>
+              <div class="mb-2">
+                  <label  class="form-label">DESCRIPCIÓN</label>
+                 <textarea cols="4" rows="4" class="form-control" id="edescripcion" ></textarea>
+              </div>
+              <div class="mb-2">
+                <label  class="form-label">PRECIO</label>
+                <input type="number" class="form-control text-center" id="eprecio">
+            </div>
+              <div class="mb-2">
+                  <label  class="form-label">TALLA</label>
+                  <input type="text" class="form-control text-center" id="etalla">
+              </div>
+              <div class="mb-2">
+                <label  class="form-label">CANTIDAD</label>
+                <input type="number" class="form-control text-center" id="ecantidadp">
+            </div>
+              <div>
+                  <label  class="form-label">FOTO</label>
+                  <input type="file" name="efotop" class="form-control" id="efotop" onchange="previewEditedImage()">
+                  <img id="eprenda-preview" src="#" style="max-width: 100%; max-height: 140px; margin: 0 auto;">
+              </div>
+          </form>                
+      </div>
+      <div class="modal-footer">
+
+        <input type="hidden" id="idp">
+
+          <button type="button" class="btn btn-success" onclick="actualizarPrendas()">  ACTUALIZAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 16 16">
+            <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>
+            <path d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>
+          </svg></button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">   CANCELAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+          </svg> </button>              
+      </div>
+      </div>
+  </div>
+</div> 
+
+
+
+      <!-- Incluir CSS de DataTables -->
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+      <!-- Incluir jQuery -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <!-- Incluir DataTables -->
+      <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+  
+
     <script src="assets/js/bootstrap.bundle.js"></script>
     <script src="assets/js/sweetalert2.all.min.js"></script>
-    <script src="assets/js/inicio.js"></script>
+    <script src="assets/js/admin.js"></script>
 </body>
 </html>
