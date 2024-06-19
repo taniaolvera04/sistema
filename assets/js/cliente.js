@@ -74,3 +74,6 @@ const guardarPerfil=async()=>{
     Swal.fire({title:"ERROR",text:json.mensaje,icon:"error"});
     }
 }
+
+
+
