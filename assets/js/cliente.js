@@ -146,7 +146,30 @@ function restarCantidad(idProducto) {
     }
 }
 
+// Variable global para almacenar productos en el carrito
+let productosEnCarrito = [];
 
+// Función para mostrar los productos del carrito
+function mostrarCarrito() {
+    const carritoDiv = document.getElementById('carrito');
+    carritoDiv.innerHTML = '';
+
+    // Recorrer productosEnCarrito y generar HTML para cada producto
+    productosEnCarrito.forEach(producto => {
+        const productoHTML = `
+            <div class="producto-carrito">
+                <img src="${producto.foto}" alt="${producto.nombre}" height="50px">
+                <p>${producto.nombre}</p>
+                <p>Cantidad: ${producto.cantidad}</p>
+                <p>Precio unitario: $${producto.precio}</p>
+                <button class="btn btn-danger" onclick="eliminarDelCarrito(${producto.id_carrito})">Eliminar</button>
+            </div>
+        `;
+        carritoDiv.innerHTML += productoHTML;
+    });
+}
+
+// Función para agregar un producto al carrito
 async function agregarCarrito(idProducto) {
     const cantidad = document.getElementById(`cantidad-${idProducto}`).value;
     const usuario = localStorage.getItem('usuario'); // Obtener el usuario desde localStorage
@@ -171,8 +194,8 @@ async function agregarCarrito(idProducto) {
                 text: json.mensaje,
                 icon: 'success'
             }).then(() => {
-                // Actualizar la interfaz del carrito o realizar otras acciones necesarias
-                actualizarCarrito();
+                // Actualizar la interfaz del carrito mostrando los productos actualizados
+                obtenerCarrito();
             });
         } else {
             Swal.fire({
@@ -190,7 +213,6 @@ async function agregarCarrito(idProducto) {
         });
     }
 }
-
 
 // Función para eliminar un producto del carrito
 async function eliminarDelCarrito(idCarrito) {
@@ -212,8 +234,8 @@ async function eliminarDelCarrito(idCarrito) {
                 text: json.mensaje,
                 icon: 'success'
             }).then(() => {
-                // Actualizar la interfaz del carrito o realizar otras acciones necesarias
-                actualizarCarrito();
+                // Actualizar la interfaz del carrito mostrando los productos actualizados
+                obtenerCarrito();
             });
         } else {
             Swal.fire({
@@ -249,8 +271,10 @@ async function obtenerCarrito() {
         const json = await respuesta.json();
 
         if (json.success) {
-            const carrito = json.carrito;
-            console.log('Productos en el carrito:', carrito);
+            // Actualizar productosEnCarrito con los datos recibidos del servidor
+            productosEnCarrito = json.carrito;
+            // Mostrar los productos actualizados en el carrito
+            mostrarCarrito();
         } else {
             Swal.fire({
                 title: 'Error',
@@ -268,4 +292,35 @@ async function obtenerCarrito() {
     }
 }
 
+// Función para confirmar la compra
+function confirmarCompra() {
+    Swal.fire({
+        title: 'Confirmar Compra',
+        text: '¿Está seguro de confirmar la compra?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Aquí podrías enviar los datos de la compra al servidor y realizar acciones adicionales si es necesario
+            Swal.fire({
+                title: 'Compra Confirmada',
+                text: '¡Su compra ha sido confirmada con éxito!',
+                icon: 'success'
+            }).then(() => {
+                // Puedes redirigir a otra página o realizar acciones adicionales después de confirmar la compra
+                // Por ejemplo, podrías limpiar el carrito y actualizar la interfaz
+                limpiarCarrito();
+            });
+        }
+    });
+}
 
+// Función para limpiar el carrito después de confirmar la compra
+function limpiarCarrito() {
+    // Limpiar la variable global y la interfaz del carrito
+    productosEnCarrito = [];
+    const carritoDiv = document.getElementById('carrito');
+    carritoDiv.innerHTML = '';
+}
