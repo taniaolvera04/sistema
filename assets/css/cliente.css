@@ -1,8 +1,11 @@
 body {
+    background: rgb(218,63,63);
+background: radial-gradient(circle, rgba(218,63,63,1) 0%, rgba(65,64,64,1) 100%);
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
+    
 }
 
 header {

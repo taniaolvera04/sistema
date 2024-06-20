@@ -7,7 +7,10 @@ img{
   border-radius: 50%;
 }
 
-
+body{
+  background: rgb(218,63,63);
+background: radial-gradient(circle, rgba(218,63,63,1) 0%, rgba(65,64,64,1) 100%);
+}
 .btn-primary {
     width: 200px;
     height: 80px;
