@@ -1,10 +1,9 @@
 body {
-    background: rgb(218,63,63);
-background: radial-gradient(circle, rgba(218,63,63,1) 0%, rgba(65,64,64,1) 100%);
+    background: rgb(129,41,41);
+background: radial-gradient(circle, rgba(129,41,41,1) 0%, rgba(0,0,0,1) 100%);
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
     
 }
 
@@ -64,3 +63,13 @@ header {
 }
 
 
+
+#ca{
+color: white;
+font-weight: bold;
+}
+
+#h{
+    font-weight: bold;
+    font-size: 25px;
+}

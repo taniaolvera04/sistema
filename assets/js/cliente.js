@@ -136,7 +136,7 @@ function sumarCantidad(idProducto) {
     inputCantidad.value = cantidad;
 }
 
-// Función para decrementar la cantidad en el spinner
+
 function restarCantidad(idProducto) {
     const inputCantidad = document.getElementById(`cantidad-${idProducto}`);
     let cantidad = parseInt(inputCantidad.value, 10);
@@ -146,33 +146,33 @@ function restarCantidad(idProducto) {
     }
 }
 
-// Variable global para almacenar productos en el carrito
+
 let productosEnCarrito = [];
 
-// Función para mostrar los productos del carrito
 function mostrarCarrito() {
-    const carritoDiv = document.getElementById('carrito');
-    carritoDiv.innerHTML = '';
+    const tbody = document.getElementById('carrito-table-body');
+    tbody.innerHTML = ''; 
 
-    // Recorrer productosEnCarrito y generar HTML para cada producto
-    productosEnCarrito.forEach(producto => {
-        const productoHTML = `
-            <div class="producto-carrito">
-                <img src="${producto.foto}" alt="${producto.nombre}" height="50px">
-                <p>${producto.nombre}</p>
-                <p>Cantidad: ${producto.cantidad}</p>
-                <p>Precio unitario: $${producto.precio}</p>
-                <button class="btn btn-danger" onclick="eliminarDelCarrito(${producto.id_carrito})">Eliminar</button>
-            </div>
+    productosEnCarrito.forEach((producto, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><img src="${producto.fotop}" alt="${producto.nombrep}" height="50px"></td>
+            <td>${producto.nombrep}</td>
+            <td>${producto.talla}</td>
+            <td>$${producto.precio}</td>
+            <td>${producto.cantidad}</td>
+            <td><button class="btn btn-danger" onclick="eliminarDelCarrito(${producto.id_carrito})">Eliminar</button></td>
         `;
-        carritoDiv.innerHTML += productoHTML;
+        tbody.appendChild(row);
     });
 }
 
-// Función para agregar un producto al carrito
+
+
 async function agregarCarrito(idProducto) {
     const cantidad = document.getElementById(`cantidad-${idProducto}`).value;
-    const usuario = localStorage.getItem('usuario'); // Obtener el usuario desde localStorage
+    const usuario = localStorage.getItem('usuario'); 
 
     const formData = new FormData();
     formData.append('action', 'agregarC');
@@ -214,6 +214,54 @@ async function agregarCarrito(idProducto) {
     }
 }
 
+
+async function obtenerCarrito() {
+    const usuario = localStorage.getItem('usuario');
+
+    const formData = new FormData();
+    formData.append('action', 'listarC');
+    formData.append('usuario', usuario);
+
+    try {
+        const respuesta = await fetch('php/carrito.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const json = await respuesta.json();
+
+        if (json.success) {
+            productosEnCarrito = json.carrito;
+            mostrarCarrito();
+
+            // Calcular y mostrar el total del carrito
+            let totalCarrito = json.total;
+            // Puedes formatear el total según sea necesario
+            const totalCarritoDisplay = document.getElementById('total-carrito-display');
+            if (totalCarritoDisplay) {
+                totalCarritoDisplay.textContent = `$${totalCarrito}`;
+            } else {
+                console.error('Elemento para mostrar el total no encontrado');
+            }
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: json.mensaje,
+                icon: 'error'
+            });
+        }
+    } catch (error) {
+        console.error('Error al obtener el carrito:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al intentar obtener el carrito',
+            icon: 'error'
+        });
+    }
+}
+
+
+
 // Función para eliminar un producto del carrito
 async function eliminarDelCarrito(idCarrito) {
     const formData = new FormData();
@@ -254,43 +302,6 @@ async function eliminarDelCarrito(idCarrito) {
     }
 }
 
-// Función para obtener y mostrar los productos en el carrito
-async function obtenerCarrito() {
-    const usuario = localStorage.getItem('usuario'); // Obtener el usuario desde localStorage
-
-    const formData = new FormData();
-    formData.append('action', 'listarC');
-    formData.append('usuario', usuario);
-
-    try {
-        const respuesta = await fetch('php/carrito.php', {
-            method: 'POST',
-            body: formData
-        });
-
-        const json = await respuesta.json();
-
-        if (json.success) {
-            // Actualizar productosEnCarrito con los datos recibidos del servidor
-            productosEnCarrito = json.carrito;
-            // Mostrar los productos actualizados en el carrito
-            mostrarCarrito();
-        } else {
-            Swal.fire({
-                title: 'Error',
-                text: json.mensaje,
-                icon: 'error'
-            });
-        }
-    } catch (error) {
-        console.error('Error al obtener el carrito:', error);
-        Swal.fire({
-            title: 'Error',
-            text: 'Hubo un problema al intentar obtener el carrito',
-            icon: 'error'
-        });
-    }
-}
 
 // Función para confirmar la compra
 function confirmarCompra() {
@@ -317,10 +328,44 @@ function confirmarCompra() {
     });
 }
 
-// Función para limpiar el carrito después de confirmar la compra
+
 function limpiarCarrito() {
-    // Limpiar la variable global y la interfaz del carrito
+    
     productosEnCarrito = [];
-    const carritoDiv = document.getElementById('carrito');
+    const carritoDiv = document.getElementById('carrito-table-body');
     carritoDiv.innerHTML = '';
+    const carritoDisplay = document.getElementById('total-carrito-display');
+    carritoDisplay.innerHTML = '';
+}
+
+
+async function generarTicketPDF() {
+    const usuario = localStorage.getItem('usuario'); // Obtener el usuario de donde lo guardes
+
+    const formData = new FormData();
+    formData.append('action', 'generarTicketPDF');
+    formData.append('usuario', usuario);
+
+    try {
+        const respuesta = await fetch('pdf/generar_pdf.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const blob = await respuesta.blob();
+        const url = window.URL.createObjectURL(blob);
+
+       
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'ticket.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+        console.error('Error al generar el ticket PDF:', error);
+        alert('Hubo un problema al generar el ticket PDF');
+    }
 }

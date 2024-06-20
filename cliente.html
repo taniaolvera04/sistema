@@ -7,14 +7,15 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/inicio.css">
     <link rel="stylesheet" href="assets/css/cliente.css">
+    
 </head>
 
-<body class="text-center" onload="cargarNombre();cargarCatalogo()">
+<body class="text-center" onload="cargarNombre();cargarCatalogo();obtenerCarrito()">
    
     <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
         <div class="container-fluid">
           <img src="assets/img/logo.png" alt="Logo" width="57" height="73" class="d-inline-block">
-            <span class="navbar-brand h1">NOMBRE</span>
+            <span class="navbar-brand h1" id="h">DARK MOON</span>
             
             <span class="navbar-text">
 
@@ -33,34 +34,43 @@
 
       <main id="catalogo" >
        
-    </main>
+    </main><br><br><br>
 
-    <table class="table table-bordered">
+
+    <h2 id="ca">CARRITO</h2>
+    <table class="table table-bordered w-75 m-auto">
       <thead>
           <tr>
               <th>#</th>
               <th>Foto</th>
               <th>Nombre</th>
+              <th>Talla</th>
+              <th>Precio</th>
               <th>Cantidad</th>
-              <th>Precio Unitario</th>
               <th>Acción</th>
           </tr>
       </thead>
       <tbody id="carrito-table-body">
-          <!-- Aquí se cargarán los productos del carrito -->
       </tbody>
+      <tfoot>
+          <tr>
+              <td colspan="4"></td>
+              <td><h3>TOTAL</h3></td>
+              <td colspan="2"><span id="total-carrito-display">$0</span></td>
+          </tr>
+      </tfoot>
   </table>
-    
-             <!-- Contenedor para mostrar el carrito -->
-<div id="carrito" class="carrito">
-  <!-- Aquí se mostrarán los productos del carrito -->
-</div>
+  
 
-<!-- Botón para confirmar la compra -->
 <button id="confirmarCompra" class="btn btn-primary mt-3" onclick="confirmarCompra()">Confirmar Compra</button>
 
     
 
+<button id="ticket" class="btn btn-primary mt-3" onclick="generarTicketPDF()">PDF</button>
+
+    
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script src="assets/js/bootstrap.bundle.js"></script>
     <script src="assets/js/sweetalert2.all.min.js"></script>
