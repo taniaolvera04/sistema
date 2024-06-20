@@ -77,3 +77,29 @@ const guardarPerfil=async()=>{
 
 
 
+function cargarCatalogo() {
+    fetch('php/metodosC.php')
+        .then(response => response.json())
+        .then(data => {
+            const catalogo = document.getElementById('catalogo');
+            catalogo.innerHTML = '';
+
+            data.forEach(prenda => {
+                const prendaHTML = `
+                    <div class="prenda">
+                        <img src="${prenda.foto}" alt="${prenda.nombre}" height="60px">
+                        <h2>${prenda.nombre}</h2>
+                        <p>${prenda.descripcion}</p>
+                        <p>Precio: $${prenda.precio}</p>
+                        <p>Talla: ${prenda.talla}</p>
+                        <div class="botones">
+                            <button class="boton">Ver Detalles</button>
+                        </div>
+                    </div>
+                `;
+                catalogo.innerHTML += prendaHTML;
+            });
+        })
+        .catch(error => console.error('Error al cargar el catálogo:', error));
+}
+

@@ -130,6 +130,7 @@ const guardarPrendas = async () => {
                 text: json.mensaje,
                 icon: "success"
             });
+            limpiarP();
             cargarPrendas();
         } else {
             Swal.fire({
@@ -610,6 +611,17 @@ const actualizarCategoria = async () => {
         Swal.fire({ title: "ERROR", text: "Hubo un problema al procesar la solicitud", icon: "error" });
     }
 }    
+
+
+const limpiarP=()=>{
+    document.querySelector("#idp").value="";
+    document.querySelector("#nombrep").value="";
+    document.querySelector("#descripcion").value="";
+    document.querySelector("#precio").value="";
+    document.querySelector("#talla").value="";
+    document.querySelector("#cantidadp").value="";
+    document.getElementById("prenda-preview").src="";
+}
 
 
 

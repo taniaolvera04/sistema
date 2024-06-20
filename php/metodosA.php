@@ -233,6 +233,7 @@ break;
     
         echo json_encode($valido);
         break;
+        
     
         case "delete":
 
