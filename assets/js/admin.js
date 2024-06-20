@@ -497,6 +497,7 @@ const guardarCategoria = async () => {
                 text: json.mensaje,
                 icon: "success"
             });
+            document.querySelector("#nombrec").value="";
             cargarCategorias();
         } else {
             Swal.fire({
