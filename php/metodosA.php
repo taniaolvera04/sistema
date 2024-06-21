@@ -1,7 +1,8 @@
 <?php
 require_once "config.php";
 header('Content-Type: application/json; charset=utf-8');
-date_default_timezone_set('America/Mexico_City');
+date_default_timezone_set('America/Mexico_City'); 
+
 
 $valido['success']=array('success'=>false,'mensaje'=>"");
 
@@ -13,35 +14,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         //METODOS PARA AGREGAR PRENDAS
         case "guardar":
-            $a = $_POST['nombrep'];
-            $b = $_POST['descripcion'];
-            $c = $_POST['precio'];
-            $d = $_POST['talla'];
-            $e = $_POST['cantidadp'];
-            $h = $_POST['idc'];
-            
+            // Obtener los datos del formulario
+            $a = $_POST['nombrep'] ?? '';
+            $b = $_POST['descripcion'] ?? '';
+            $c = $_POST['precio'] ?? 0;
+            $d = $_POST['talla'] ?? '';
+            $e = $_POST['cantidadp'] ?? 0;
+            $h = $_POST['idc'] ?? '';
+            $usuario = $_POST['usuario'] ?? ''; // Nombre de usuario
+
+            // Manejo de la imagen
             $fileName = $_FILES['fotop']['name'];
             $fileTmpName = $_FILES['fotop']['tmp_name'];
-            $uploadDirectory = '../assets/img_prendas/'; 
-            
+            $uploadDirectory = '../assets/img_prendas/';
+
+            // Verificar y crear directorio si no existe
             if (!is_dir($uploadDirectory)) {
                 mkdir($uploadDirectory, 0755, true);
             }
-            
+
             $filePath = $uploadDirectory . basename($fileName);
-            
+
+            // Mover la imagen subida al directorio deseado
             if (move_uploaded_file($fileTmpName, $filePath)) {
-                
-        $sql = "INSERT INTO prendas (nombrep, descripcion, precio, talla, cantidadp, fotop, id_c) VALUES ('$a','$b','$c','$d','$e', '$filePath','$h')";
-                
-                if ($cx->query($sql)) {
-                    $valido['success'] = true;
-                    $valido['mensaje'] = "PRENDA SE GUARDÓ CORRECTAMENTE";
+                // Obtener el ID del usuario
+                $sqlUsuario = "SELECT id_u FROM usuarios WHERE usuario = ?";
+                $stmtUsuario = $cx->prepare($sqlUsuario);
+                $stmtUsuario->bind_param("s", $usuario);
+                $stmtUsuario->execute();
+                $resultadoUsuario = $stmtUsuario->get_result();
+
+                if ($resultadoUsuario->num_rows > 0) {
+                    $rowUsuario = $resultadoUsuario->fetch_assoc();
+                    $id_u = $rowUsuario['id_u'];
+
+                    // Insertar los datos de la prenda en la base de datos
+                    $sqlInsertPrenda = "INSERT INTO prendas (nombrep, descripcion, precio, talla, cantidadp, fotop, id_c) 
+                                        VALUES ('$a', '$b', $c, '$d', $e, '$filePath', $h)";
+
+                    if ($cx->query($sqlInsertPrenda)) {
+                        // Obtener el ID de la prenda recién insertada
+                        $id_p = $cx->insert_id;
+
+                        // Insertar el movimiento en la tabla movimientos como compra
+                        $fechaHora = date("Y-m-d H:i:s");
+                        $sqlInsertMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u, cant) 
+                                               VALUES ('$fechaHora', 'compra', $id_p, $id_u, $e)";
+
+                        if ($cx->query($sqlInsertMovimiento)) {
+                            $valido['success'] = true;
+                            $valido['mensaje'] = "Prenda y movimiento de compra registrados correctamente";
+                        } else {
+                            $valido['mensaje'] = "Error al registrar el movimiento de compra en la base de datos: " . $cx->error;
+                        }
+                    } else {
+                        $valido['mensaje'] = "Error al guardar la prenda en la base de datos: " . $cx->error;
+                    }
                 } else {
-                    $valido['mensaje'] = "ERROR AL GUARDAR PRENDA EN BD";
+                    $valido['mensaje'] = "No se encontró el usuario '$usuario'";
                 }
             } else {
-                $valido['mensaje'] = "ERROR AL SUBIR IMAGEN";
+                $valido['mensaje'] = "Error al subir la imagen de la prenda";
             }
 
             echo json_encode($valido);

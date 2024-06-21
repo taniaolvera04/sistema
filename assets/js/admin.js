@@ -100,6 +100,8 @@ const guardarPrendas = async () => {
     let cantidadp = document.getElementById('cantidadp').value;
     let fotop = document.getElementById('fotop').files[0]; 
     let idc = document.getElementById('idc').value;
+
+    const usuario = localStorage.getItem('usuario'); 
     
 
     if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || cantidadp.trim() == "" || talla.trim() == "" || !fotop || idc.trim() == "" ) {
@@ -119,6 +121,7 @@ const guardarPrendas = async () => {
     datos.append("talla", talla);
     datos.append("fotop", fotop); 
     datos.append("idc", idc); 
+    datos.append('usuario', usuario);
     datos.append('action', 'guardar');
 
     try {
