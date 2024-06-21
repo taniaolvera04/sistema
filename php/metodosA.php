@@ -379,6 +379,42 @@ break;
  break;
 
 
+
+ //MOVIMIENTOS
+
+ case "graficasMov":
+    $sql = "SELECT m.fecha AS fecha, m.tipomov AS tipomov FROM movimientos m";
+    $registros = array();
+
+    $res = $cx->query($sql);
+    if ($res && $res->num_rows > 0) {
+        while ($row = $res->fetch_assoc()) {
+            // Obtener solo la fecha (sin la hora) para agrupar por día
+            $fecha = substr($row['fecha'], 0, 10);
+
+            // Contar el número de ventas y compras por día
+            if (!isset($registros[$fecha])) {
+                $registros[$fecha] = array('ventas' => 0, 'compras' => 0);
+            }
+
+            if ($row['tipomov'] == 'venta') {
+                $registros[$fecha]['ventas']++;
+            } else if ($row['tipomov'] == 'compra') {
+                $registros[$fecha]['compras']++;
+            }
+        }
+        $valido['success'] = true;
+        $valido['mensaje'] = "Consulta exitosa";
+        $valido['data'] = $registros;
+    } else {
+        $valido['success'] = false;
+        $valido['mensaje'] = "No se encontraron registros";
+    }
+
+    echo json_encode($valido);
+    break;
+
+
             
                 default:
                     echo json_encode(["error" => "Acción no válida"]);

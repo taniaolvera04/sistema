@@ -797,3 +797,95 @@ const cargarMovimientos = async () => {
 };
 
 btnMov.onclick = cargarMovimientos;
+
+
+
+//MOVIMIENTOS
+
+const graficoMovimientos = () => {
+    // Limpiar el contenedor de acción
+    action.innerHTML = '';
+
+    // Crear instancia de FormData para enviar datos
+    const formData = new FormData();
+    formData.append('action', 'graficasMov'); // Agregar la acción que deseas ejecutar en PHP
+
+    // Realizar la solicitud AJAX utilizando fetch
+    fetch('php/metodosA.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Datos recibidos:', data);
+
+        if (data.success) {
+            const movimientos = data.data;
+            const fechas = Object.keys(movimientos).sort();
+            const ventasPorDia = fechas.map(fecha => movimientos[fecha].ventas || 0);
+            const comprasPorDia = fechas.map(fecha => movimientos[fecha].compras || 0);
+
+            // Crear gráfico de ventas por día
+            let canvasVentas = document.createElement('canvas');
+            canvasVentas.id = 'canvasVentas';
+            action.appendChild(canvasVentas);
+
+            let ctxVentas = canvasVentas.getContext('2d');
+            let chartVentas = new Chart(ctxVentas, {
+                type: 'bar',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Ventas por Día',
+                        data: ventasPorDia,
+                        backgroundColor: '#44F59C',
+                        borderColor: 'green',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Crear gráfico de compras por día
+            let canvasCompras = document.createElement('canvas');
+            canvasCompras.id = 'canvasCompras';
+            action.appendChild(canvasCompras);
+
+            let ctxCompras = canvasCompras.getContext('2d');
+            let chartCompras = new Chart(ctxCompras, {
+                type: 'bar',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Compras por Día',
+                        data: comprasPorDia,
+                        backgroundColor: '#F54444',
+                        borderColor: 'red',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        } else {
+            console.error('Error al obtener los datos de movimientos:', data.mensaje);
+        }
+    })
+    .catch(error => {
+        console.error('Error en la solicitud AJAX:', error);
+    });
+};
+
+// Llamar a la función para generar los gráficos al cargar la página o según tus necesidades
+btnDa.onclick=graficoMovimientos;
