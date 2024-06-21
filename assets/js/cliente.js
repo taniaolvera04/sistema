@@ -303,30 +303,45 @@ async function eliminarDelCarrito(idCarrito) {
 }
 
 
-// Función para confirmar la compra
-function confirmarCompra() {
-    Swal.fire({
-        title: 'Confirmar Compra',
-        text: '¿Está seguro de confirmar la compra?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Aquí podrías enviar los datos de la compra al servidor y realizar acciones adicionales si es necesario
+async function confirmarCompra() {
+    const usuario = 'nombreUsuario'; // Reemplaza 'nombreUsuario' con la lógica para obtener el nombre de usuario
+    const formData = new FormData();
+    formData.append('action', 'confirmarCompra');
+    formData.append('usuario', sesion); // Envía el nombre de usuario al servidor
+
+    try {
+        const respuesta = await fetch('php/carrito.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const json = await respuesta.json();
+
+        if (json.success) {
             Swal.fire({
                 title: 'Compra Confirmada',
-                text: '¡Su compra ha sido confirmada con éxito!',
+                text: json.mensaje,
                 icon: 'success'
             }).then(() => {
-                // Puedes redirigir a otra página o realizar acciones adicionales después de confirmar la compra
-                // Por ejemplo, podrías limpiar el carrito y actualizar la interfaz
                 limpiarCarrito();
             });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: json.mensaje,
+                icon: 'error'
+            });
         }
-    });
+    } catch (error) {
+        console.error('Error al confirmar la compra:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al intentar confirmar la compra',
+            icon: 'error'
+        });
+    }
 }
+
 
 
 function limpiarCarrito() {
@@ -336,25 +351,4 @@ function limpiarCarrito() {
     carritoDiv.innerHTML = '';
     const carritoDisplay = document.getElementById('total-carrito-display');
     carritoDisplay.innerHTML = '';
-}
-
-function generarTicketPDF() {
-    fetch('php/generar_ticket.php')
-        .then(response => response.blob())
-        .then(blob => {
-            // Crear un objeto URL para el blob
-            const url = window.URL.createObjectURL(blob);
-
-            // Crear un enlace para descargar el archivo
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'ticket.pdf'; // Nombre del archivo que se descargará
-            document.body.appendChild(a); // Agregar el enlace al DOM
-            a.click(); // Simular clic en el enlace
-            a.remove(); // Eliminar el enlace del DOM cuando ya no se necesita
-        })
-        .catch(error => {
-            console.error('Error al generar el ticket PDF:', error);
-            alert('Hubo un error al generar el ticket PDF. Por favor, inténtalo nuevamente.');
-        });
 }

@@ -1,6 +1,8 @@
 <?php
 require_once "config.php";
 header('Content-Type: application/json; charset=utf-8');
+date_default_timezone_set('America/Mexico_City'); // Cambia 'America/Mexico_City' por tu zona horaria local
+
 
 $valido = ['success' => false, 'mensaje' => ''];
 
@@ -49,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $valido['mensaje'] = "Cantidad del producto actualizada en el carrito";
 
                         // Registrar movimiento de compra en la tabla movimientos
-                        $tipoMovimiento = "compra"; 
+                        $tipoMovimiento = "venta"; 
                         $fechaHora = date("Y-m-d H:i:s"); 
                         $sqlMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u) VALUES (?, ?, ?, ?)";
                         $stmtMovimiento = $cx->prepare($sqlMovimiento);
@@ -87,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $valido['mensaje'] = "Producto agregado al carrito correctamente";
 
                             // Registrar movimiento de compra en la tabla movimientos
-                            $tipoMovimiento = "compra"; 
+                            $tipoMovimiento = "venta"; 
                             $fechaHora = date("Y-m-d H:i:s"); 
                             $sqlMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u) VALUES (?, ?, ?, ?)";
                             $stmtMovimiento = $cx->prepare($sqlMovimiento);
@@ -181,6 +183,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => false, 'mensaje' => "No se encontró el usuario '$usuario'"]);
             }
             break;
+
+
+              case "confirmarCompra":
+            $usuario = $_POST['usuario'] ?? '';
+
+            $sqlUsuario = "SELECT id_u FROM usuarios WHERE usuario = ?";
+            $stmtUsuario = $cx->prepare($sqlUsuario);
+            $stmtUsuario->bind_param("s", $usuario);
+            $stmtUsuario->execute();
+            $resultadoUsuario = $stmtUsuario->get_result();
+
+            if ($resultadoUsuario->num_rows > 0) {
+                $row = $resultadoUsuario->fetch_assoc();
+                $idUsuario = $row['id_u'];
+
+                // Eliminar todos los productos del carrito para este usuario
+                $sqlDelete = "DELETE FROM carrito WHERE id_u = ?";
+                $stmtDelete = $cx->prepare($sqlDelete);
+                $stmtDelete->bind_param("i", $idUsuario);
+
+                if ($stmtDelete->execute()) {
+                    $valido['success'] = true;
+                    $valido['mensaje'] = "Compra confirmada y productos eliminados del carrito";
+                } else {
+                    $valido['mensaje'] = "Error al eliminar productos del carrito: " . $stmtDelete->error;
+                }
+            } else {
+                $valido['mensaje'] = "No se encontró el usuario '$usuario'";
+            }
+
+            echo json_encode($valido);
+            break;
+            
+
 
         default:
             echo json_encode(['success' => false, 'mensaje' => "Acción no válida"]);
