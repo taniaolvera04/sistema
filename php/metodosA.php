@@ -310,46 +310,40 @@ break;
 
 
             case "selectMov":
+               
                 $sql = "SELECT m.id_u AS id_u,
-                              m.id_p AS id_p,
-                               pr.nombrep AS nombrep,
-                               m.cant AS cant,
-                               pr.precio AS precio,
-                               m.id_p AS total_a_pagar,
-                               pr.talla AS talla,
-                               m.fecha AS fecha
-                        FROM movimientos m
-                        JOIN prendas pr ON m.id_p = pr.id_p";
-                
-                $registros = array();
-                
-                $res = $cx->query($sql);
-                if ($res && $res->num_rows > 0) {
-                    while ($row = $res->fetch_assoc()) {
-                        $total_pagar = $row['cant'] * $row['precio'];
+                m.tipomov AS tipomov,
+                pr.nombrep AS nombrep,
+                m.cant AS cantidad,
+                pr.talla AS talla,
+                m.fecha AS fecha
+         FROM movimientos m
+         JOIN prendas pr ON m.id_p = pr.id_p";
 
-                        $registros['data'][] = array(
-                            'id_u' => $row['id_u'],
-                            'id_p' => $row['id_p'],
-                            'nombrep' => $row['nombrep'],
-                            'cant' => $row['cant'],
-                            'precio' => $row['precio'],
-                            'total_a_pagar' => $total_pagar,
-                            'talla' => $row['talla'],
-                            'fecha' => $row['fecha']
-                           
-                        );
-                    }
-                    $valido['success'] = true;
-                    $valido['mensaje'] = "Consulta exitosa";
-                    $valido['data'] = $registros['data']; 
-                } else {
-                    $valido['success'] = false;
-                    $valido['mensaje'] = "No se encontraron registros";
-                }
-                
-                echo json_encode($valido);
-                break;
+ $registros = array();
+
+ $res = $cx->query($sql);
+ if ($res && $res->num_rows > 0) {
+     while ($row = $res->fetch_assoc()) {
+         $registros['data'][] = array(
+             'id_u' => $row['id_u'],
+             'tipomov' => $row['tipomov'],
+             'nombrep' => $row['nombrep'],
+             'cantidad' => $row['cantidad'],
+             'talla' => $row['talla'],
+             'fecha' => $row['fecha']
+         );
+     }
+     $valido['success'] = true;
+     $valido['mensaje'] = "Consulta exitosa";
+     $valido['data'] = $registros['data'];
+ } else {
+     $valido['success'] = false;
+     $valido['mensaje'] = "No se encontraron registros";
+ }
+
+ echo json_encode($valido);
+ break;
 
 
             
