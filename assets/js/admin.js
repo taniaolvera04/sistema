@@ -828,6 +828,7 @@ const graficoMovimientos = () => {
             // Crear gráfico de ventas por día
             let canvasVentas = document.createElement('canvas');
             canvasVentas.id = 'canvasVentas';
+            canvasVentas.height = 90;
             action.appendChild(canvasVentas);
 
             let ctxVentas = canvasVentas.getContext('2d');
@@ -855,6 +856,7 @@ const graficoMovimientos = () => {
             // Crear gráfico de compras por día
             let canvasCompras = document.createElement('canvas');
             canvasCompras.id = 'canvasCompras';
+            canvasCompras.height = 90;
             action.appendChild(canvasCompras);
 
             let ctxCompras = canvasCompras.getContext('2d');
