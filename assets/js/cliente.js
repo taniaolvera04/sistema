@@ -338,34 +338,23 @@ function limpiarCarrito() {
     carritoDisplay.innerHTML = '';
 }
 
+function generarTicketPDF() {
+    fetch('php/generar_ticket.php')
+        .then(response => response.blob())
+        .then(blob => {
+            // Crear un objeto URL para el blob
+            const url = window.URL.createObjectURL(blob);
 
-async function generarTicketPDF() {
-    const usuario = localStorage.getItem('usuario'); // Obtener el usuario de donde lo guardes
-
-    const formData = new FormData();
-    formData.append('action', 'generarTicketPDF');
-    formData.append('usuario', usuario);
-
-    try {
-        const respuesta = await fetch('pdf/generar_pdf.php', {
-            method: 'POST',
-            body: formData
+            // Crear un enlace para descargar el archivo
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ticket.pdf'; // Nombre del archivo que se descargará
+            document.body.appendChild(a); // Agregar el enlace al DOM
+            a.click(); // Simular clic en el enlace
+            a.remove(); // Eliminar el enlace del DOM cuando ya no se necesita
+        })
+        .catch(error => {
+            console.error('Error al generar el ticket PDF:', error);
+            alert('Hubo un error al generar el ticket PDF. Por favor, inténtalo nuevamente.');
         });
-
-        const blob = await respuesta.blob();
-        const url = window.URL.createObjectURL(blob);
-
-       
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = 'ticket.pdf';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-
-    } catch (error) {
-        console.error('Error al generar el ticket PDF:', error);
-        alert('Hubo un problema al generar el ticket PDF');
-    }
 }

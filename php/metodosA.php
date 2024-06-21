@@ -1,6 +1,6 @@
 <?php
 require_once "config.php";
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 
 $valido['success']=array('success'=>false,'mensaje'=>"");
 
@@ -289,10 +289,52 @@ break;
                 echo json_encode($registros);
             
             break;
-        
-}
 
-} else {
-    echo json_encode(["error" => "Método no permitido"]);
-}
+            //MOSTRAR MOVIMIENTOS
+
+
+            case "selectMov":
+                $sql = "SELECT m.id_u AS id_u,
+                               m.id_p AS id_p,
+                               pr.nombrep AS nombrep,
+                               pr.cantidadp AS cantidadp,
+                               pr.talla AS talla,
+                               m.fecha AS fecha
+                        FROM movimientos m
+                        JOIN prendas pr ON m.id_p = pr.id_p";
+                
+                $registros = array();
+                
+                $res = $cx->query($sql);
+                if ($res && $res->num_rows > 0) {
+                    while ($row = $res->fetch_assoc()) {
+                        $registros['data'][] = array(
+                            'id_u' => $row['id_u'],
+                            'id_p' => $row['id_p'],
+                            'nombrep' => $row['nombrep'],
+                            'cantidadp' => $row['cantidadp'],
+                            'talla' => $row['talla'],
+                            'fecha' => $row['fecha']
+                        );
+                    }
+                    $valido['success'] = true;
+                    $valido['mensaje'] = "Consulta exitosa";
+                    $valido['data'] = $registros['data']; 
+                } else {
+                    $valido['success'] = false;
+                    $valido['mensaje'] = "No se encontraron registros";
+                }
+                
+                echo json_encode($valido);
+                break;
+
+
+            
+                default:
+                    echo json_encode(["error" => "Acción no válida"]);
+                    break;
+        }
+    } else {
+        echo json_encode(["error" => "Método no permitido"]);
+    }
 ?>

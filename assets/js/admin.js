@@ -5,6 +5,7 @@ var btnPre=document.getElementById("btnPre");
 var btnCa=document.getElementById("btnCa");
 var btnUsu=document.getElementById("btnUsu");
 var btnPro=document.getElementById("btnPro");
+var btnMov=document.getElementById("btnMov");
 var btnDa=document.getElementById("btnDa");
 
 
@@ -689,3 +690,79 @@ const mostrarUsu=async()=>{
 
 
 btnUsu.onclick=mostrarUsu;
+
+
+
+
+//MOSTRAR TODOS LOS MOVIMIENTOS
+
+const cargarMovimientos = async () => {
+    const datos = new FormData();
+    datos.append("action", "selectMov");
+
+    try {
+        let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
+        let json = await respuesta.json();
+
+        if (json.success) {
+            let tablaHTML = `
+                <table id="tablaM" class="table table-striped w-75 text-center">
+                    <thead>
+                        <tr>
+                            <th>ID USUARIO</th>
+                            <th>ID PRENDA</th>
+                            <th>NOMBRE PRENDA</th>
+                            <th>CANTIDAD</th>
+                            <th>TALLA</th>
+                            <th>FECHA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            json.data.forEach(item => {
+                tablaHTML += `
+                    <tr>
+                        <td>${item.id_u}</td>
+                        <td>${item.id_p}</td>
+                        <td>${item.nombrep}</td>
+                        <td>${item.cantidadp}</td>
+                        <td>${item.talla}</td>
+                        <td>${item.fecha}</td>
+                    </tr>
+                `;
+            });
+
+            tablaHTML += `</tbody></table>`;
+            document.getElementById("action").innerHTML = tablaHTML;
+
+            if ($.fn.DataTable.isDataTable("#tablaM")) {
+                $("#tablaM").DataTable().destroy();
+            }
+
+            $("#tablaM").DataTable({
+                lengthMenu: [5, 10, 25, 50, 100],
+                language: {
+                    lengthMenu: "Mostrar _MENU_ registros por página",
+                    zeroRecords: "No se encontraron resultados",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "No hay registros disponibles",
+                    infoFiltered: "(filtrados de _MAX_ registros totales)",
+                    search: "Buscar:",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    }
+                }
+            });
+        } else {
+            console.error("Error al cargar movimientos:", json.mensaje);
+        }
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+    }
+};
+
+btnMov.onclick = cargarMovimientos;
