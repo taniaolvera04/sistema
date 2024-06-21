@@ -675,7 +675,7 @@ const mostrarUsu=async()=>{
                     <th>TIPO</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="lista">
     `;
 
     json.data.forEach(item => {
@@ -690,11 +690,17 @@ const mostrarUsu=async()=>{
         `;
     });
 
-    tablaHTML += `</tbody></table>`;
+    tablaHTML += `</tbody></table>
+    <form action="../../assets/reporte/generar_pdf.php" method="post" target="_blank">
+    <button type="submit" class="btn btn-primary">Generar PDF</button>
+</form>
+
+
+    `;
 
     document.getElementById("action").innerHTML = tablaHTML;
 
-    if ($.fn.DataTable.isDataTable("#tablaC")) {
+    if ($.fn.DataTable.isDataTable("#tablaU")) {
         $("#tablaU").DataTable().destroy();
     }
 
