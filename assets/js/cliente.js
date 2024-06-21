@@ -37,43 +37,55 @@ window.location.href="index.html"
 }
 
 
-const cargarPerfil=async()=>{
+const cargarPerfil = async () => {
+    const datos = new FormData();
+    datos.append("usuario", sesion);
+    datos.append("action", "perfil");
 
-    datos=new FormData();
-    datos.append("usuario",sesion);
-    datos.append("action","perfil");
+    try {
+        const respuesta = await fetch("php/loginUsuario.php", { method: 'POST', body: datos });
+        const json = await respuesta.json();
 
-    let respuesta=await fetch("php/loginUsuario.php",{method:'POST',body:datos});
-    let json=await respuesta.json();
-
-    if(json.success==true){
-
-        document.getElementById("email").innerHTML=json.usuario;
-        document.getElementById("nombre").value=json.nombre;
-        document.getElementById("foto-preview").innerHTML=`<img src="php/${json.foto}" class="foto-perfil">`;
-    }else{
-    Swal.fire({title:"ERROR",text:json.mensaje,icon:"error"});
+        if (json.success) {
+            document.getElementById("email").innerHTML = json.usuario;
+            document.getElementById("nombre").value = json.nombre;
+            document.getElementById("foto-preview").innerHTML = `<img src="php/${json.foto}" class="foto-perfil">`;
+            document.getElementById("foto_perfil").src = `php/${json.foto}`;
+        } else {
+            Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({ title: "ERROR", text: "Hubo un problema con la conexión", icon: "error" });
     }
-}
+};
 
+const guardarPerfil = async (event) => {
+    event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
-const guardarPerfil=async()=>{
+    const formPerfil = document.getElementById("formPerfil");
+    const datos = new FormData(formPerfil);
+    datos.append("usuario", sesion);
+    datos.append("action", "saveperfil");
 
-    let formPerfil=document.getElementById("formPerfil");
-    datos=new FormData(formPerfil);
-    datos.append("usuario",sesion);
-    datos.append("action","saveperfil");
+    try {
+        const respuesta = await fetch("php/loginUsuario.php", { method: 'POST', body: datos });
+        const json = await respuesta.json();
 
-    let respuesta=await fetch("php/loginUsuario.php",{method:'POST',body:datos});
-    let json=await respuesta.json();
-
-    if(json.success==true){
-        Swal.fire({title:"¡ÉXITO!",text:json.mensaje,icon:"success"});
-
-    }else{
-    Swal.fire({title:"ERROR",text:json.mensaje,icon:"error"});
+        if (json.success) {
+            Swal.fire({ title: "¡ÉXITO!", text: json.mensaje, icon: "success" });
+            // Actualiza la imagen de perfil en la página sin recargar
+            document.getElementById("foto-preview").innerHTML = `<img src="php/${json.foto}" class="foto-perfil">`;
+            document.getElementById("foto_perfil").src = `php/${json.foto}`;
+        } else {
+            Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({ title: "ERROR", text: "Hubo un problema con la conexión", icon: "error" });
     }
-}
+};
+
 
 
 

@@ -1,8 +1,6 @@
 var action=document.getElementById("action");
 
 
-var btnPre=document.getElementById("btnPre");
-var btnCa=document.getElementById("btnCa");
 var btnUsu=document.getElementById("btnUsu");
 var btnPro=document.getElementById("btnPro");
 var btnMov=document.getElementById("btnMov");
@@ -49,43 +47,55 @@ window.location.href="index.html"
 }
 
 
-const cargarPerfil=async()=>{
 
-    datos=new FormData();
-    datos.append("usuario",sesion);
-    datos.append("action","perfil");
+const cargarPerfil = async () => {
+    const datos = new FormData();
+    datos.append("usuario", sesion);
+    datos.append("action", "perfil");
 
-    let respuesta=await fetch("php/loginUsuario.php",{method:'POST',body:datos});
-    let json=await respuesta.json();
+    try {
+        const respuesta = await fetch("php/loginUsuario.php", { method: 'POST', body: datos });
+        const json = await respuesta.json();
 
-    if(json.success==true){
-
-        document.getElementById("email").innerHTML=json.usuario;
-        document.getElementById("nombre").value=json.nombre;
-        document.getElementById("foto-preview").innerHTML=`<img src="php/${json.foto}" class="foto-perfil">`;
-    }else{
-    Swal.fire({title:"ERROR",text:json.mensaje,icon:"error"});
+        if (json.success) {
+            document.getElementById("email").innerHTML = json.usuario;
+            document.getElementById("nombre").value = json.nombre;
+            document.getElementById("foto-preview").innerHTML = `<img src="php/${json.foto}" class="foto-perfil">`;
+            document.getElementById("foto_perfil").src = `php/${json.foto}`;
+        } else {
+            Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({ title: "ERROR", text: "Hubo un problema con la conexión", icon: "error" });
     }
-}
+};
 
+const guardarPerfil = async (event) => {
+    event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
-const guardarPerfil=async()=>{
+    const formPerfil = document.getElementById("formPerfil");
+    const datos = new FormData(formPerfil);
+    datos.append("usuario", sesion);
+    datos.append("action", "saveperfil");
 
-    let formPerfil=document.getElementById("formPerfil");
-    datos=new FormData(formPerfil);
-    datos.append("usuario",sesion);
-    datos.append("action","saveperfil");
+    try {
+        const respuesta = await fetch("php/loginUsuario.php", { method: 'POST', body: datos });
+        const json = await respuesta.json();
 
-    let respuesta=await fetch("php/loginUsuario.php",{method:'POST',body:datos});
-    let json=await respuesta.json();
-
-    if(json.success==true){
-        Swal.fire({title:"¡ÉXITO!",text:json.mensaje,icon:"success"});
-
-    }else{
-    Swal.fire({title:"ERROR",text:json.mensaje,icon:"error"});
+        if (json.success) {
+            Swal.fire({ title: "¡ÉXITO!", text: json.mensaje, icon: "success" });
+            // Actualiza la imagen de perfil en la página sin recargar
+            document.getElementById("foto-preview").innerHTML = `<img src="php/${json.foto}" class="foto-perfil">`;
+            document.getElementById("foto_perfil").src = `php/${json.foto}`;
+        } else {
+            Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({ title: "ERROR", text: "Hubo un problema con la conexión", icon: "error" });
     }
-}
+};
 
 
 
@@ -241,8 +251,6 @@ const cargarPrendas = async () => {
         }
     });
 };
-
-btnPre.onclick = cargarPrendas;
 
 
 
@@ -495,7 +503,7 @@ const cargarCategorias = async () => {
     });
 };
 
-btnCa.onclick = cargarCategorias;
+
 
 
 
@@ -691,11 +699,15 @@ const mostrarUsu=async()=>{
     });
 
     tablaHTML += `</tbody></table>
-    <form action="../../assets/reporte/generar_pdf.php" method="post" target="_blank">
-    <button type="submit" class="btn btn-primary">Generar PDF</button>
-</form>
 
-
+    <a href="assets/reportes/generar_pdf.php">
+    <button type="submit" class="btn btn-primary" id="p">GENERAR PDF USUARIOS
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+  <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
+  <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+</svg>
+    </button>
+</a>
     `;
 
     document.getElementById("action").innerHTML = tablaHTML;
@@ -724,7 +736,7 @@ const mostrarUsu=async()=>{
 };
 
 
-btnUsu.onclick=mostrarUsu;
+
 
 
 
@@ -802,7 +814,7 @@ const cargarMovimientos = async () => {
     }
 };
 
-btnMov.onclick = cargarMovimientos;
+
 
 
 
@@ -895,5 +907,3 @@ const graficoMovimientos = () => {
     });
 };
 
-// Llamar a la función para generar los gráficos al cargar la página o según tus necesidades
-btnDa.onclick=graficoMovimientos;

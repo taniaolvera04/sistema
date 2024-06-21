@@ -1,5 +1,5 @@
 <?php
-// Incluir archivo de configuración de la base de datos
+// Incluir el archivo de configuración de la base de datos
 include("../../php/config.php");
 
 // Realizar la consulta SQL para obtener los usuarios
@@ -12,8 +12,9 @@ if ($result) {
     $lista = [];
 }
 
-// HTML para generar el PDF
-$html = '
+ob_start();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,39 +36,38 @@ $html = '
                     <th>TIPO</th>
                 </tr>
             </thead>
-            <tbody>';
-
-// Iterar sobre los usuarios obtenidos
-foreach ($lista as $item) {
-    $html .= '
-                <tr>
-                    <td>' . $item['id_u'] . '</td>
-                    <td>' . $item['usuario'] . '</td>
-                    <td>' . $item['password'] . '</td>
-                    <td>' . $item['nombre'] . '</td>
-                    <td>' . $item['foto'] . '</td>
-                    <td>' . $item['tipo'] . '</td>
-                </tr>';
-}
-
-$html .= '
+            <tbody>
+                <?php foreach ($lista as $item): ?>
+                    <tr>
+                        <td><?php echo $item['id_u']; ?></td>
+                        <td><?php echo $item['usuario']; ?></td>
+                        <td><?php echo $item['password']; ?></td>
+                        <td><?php echo $item['nombre']; ?></td>
+                        <td><?php echo $item['foto']; ?></td>
+                        <td><?php echo $item['tipo']; ?></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 </body>
-</html>';
+</html>
 
-// Generar el PDF usando Dompdf
-require_once '../../assets/libreria/dompdf/autoload.inc.php';
+<?php
+$html = ob_get_clean();
+
+// Incluir Dompdf
+require_once '../libreria/dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;
 
+// Inicializar Dompdf
 $dompdf = new Dompdf();
 
-// Cargar el HTML generado
+// Cargar el HTML
 $dompdf->loadHtml($html);
 
-// Opcional: configurar tamaño y orientación del papel
+// Opcional: Configurar tamaño y orientación del papel
 $dompdf->setPaper('A4', 'portrait'); // 'portrait' o 'landscape'
 
 // Renderizar el PDF
