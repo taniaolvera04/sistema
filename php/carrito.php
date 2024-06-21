@@ -112,6 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode($valido);
             break;
 
+            
+
         case "eliminarC":
             $idCarrito = $_POST['id_carrito'] ?? '';
 

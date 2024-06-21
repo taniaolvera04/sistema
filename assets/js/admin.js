@@ -248,35 +248,61 @@ btnPre.onclick = cargarPrendas;
 const eliminarPrenda = async (idp) => {
     Swal.fire({
         title: "¿Estás seguro de eliminar esta prenda?",
-        icon:"question",
+        icon: "question",
         showDenyButton: true,
         confirmButtonText: "Si, estoy seguro",
         denyButtonText: "No estoy seguro"
-
     }).then(async (result) => {
         if (result.isConfirmed) {
-            let idp = new FormData();
-            idp.append('idp', idp);
-            idp.append('action','delete');
+            try {
+                // Crear un nuevo objeto FormData para esta solicitud de eliminación
+                let formData = new FormData();
+                formData.append('idp', idp); // Agregar el ID de la prenda
+                formData.append('action', 'delete'); // Agregar la acción requerida
+                
+                // Realizar la solicitud POST al servidor
+                let respuesta = await fetch("php/metodosA.php", {
+                    method: 'POST',
+                    body: formData
+                });
 
-            let respuesta = await fetch("php/metodosA.php", {
-                method: 'POST',
-                body: idp
-            });
-            let json = await respuesta.json();
+                // Verificar la respuesta JSON del servidor
+                if (respuesta.ok) {
+                    let json = await respuesta.json();
 
-            if (json.success == true) {
+                    // Verificar si la eliminación fue exitosa
+                    if (json.success) {
+                        Swal.fire({
+                            title: "¡Se eliminó con éxito!",
+                            text: json.mensaje,
+                            icon: "success"
+                        });
+                        // Recargar la lista de productos después de eliminar
+                        cargarPrendas();
+                    } else {
+                        Swal.fire({
+                            title: "ERROR",
+                            text: json.mensaje,
+                            icon: "error"
+                        });
+                    }
+                } else {
+                    // Manejar errores de red u otras fallas en la solicitud
+                    throw new Error(`HTTP error! status: ${respuesta.status}`);
+                }
+            } catch (error) {
+                console.error('Error al eliminar la prenda:', error);
                 Swal.fire({
-                    title: "¡Se eliminó con éxito!", text: json.mensaje, icon: "success"});
-            } else {
-                Swal.fire({
-                    title: "ERROR", text: json.mensaje, icon: "error"});
+                    title: "Error",
+                    text: "Hubo un problema al intentar eliminar la prenda",
+                    icon: "error"
+                });
             }
-            cargarProductos();
-            Swal.fire("Prenda eliminada", "", "success");
         }
     });
 }
+
+
 
 
 //MOSTRAR INFORMACIÓN DE PRENDA EN MODAL

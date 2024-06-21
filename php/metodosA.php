@@ -1,6 +1,7 @@
 <?php
 require_once "config.php";
 header('Content-Type: application/json; charset=utf-8');
+date_default_timezone_set('America/Mexico_City');
 
 $valido['success']=array('success'=>false,'mensaje'=>"");
 
@@ -11,40 +12,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($action) {
 
         //METODOS PARA AGREGAR PRENDAS
-        case "guardar":
-            $a = $_POST['nombrep'];
-            $b = $_POST['descripcion'];
-            $c = $_POST['precio'];
-            $d = $_POST['talla'];
-            $e = $_POST['cantidadp'];
-            $h = $_POST['idc'];
-            
-            $fileName = $_FILES['fotop']['name'];
-            $fileTmpName = $_FILES['fotop']['tmp_name'];
-            $uploadDirectory = '../assets/img_prendas/'; 
-            
-            if (!is_dir($uploadDirectory)) {
-                mkdir($uploadDirectory, 0755, true);
-            }
-            
-            $filePath = $uploadDirectory . basename($fileName);
-            
-            if (move_uploaded_file($fileTmpName, $filePath)) {
-                
-        $sql = "INSERT INTO prendas (nombrep, descripcion, precio, talla, cantidadp, fotop, id_c) VALUES ('$a','$b','$c','$d','$e', '$filePath','$h')";
-                
-                if ($cx->query($sql)) {
-                    $valido['success'] = true;
-                    $valido['mensaje'] = "PRENDA SE GUARDÓ CORRECTAMENTE";
-                } else {
-                    $valido['mensaje'] = "ERROR AL GUARDAR PRENDA EN BD";
-                }
-            } else {
-                $valido['mensaje'] = "ERROR AL SUBIR IMAGEN";
-            }
+            case "guardar":
+                // Datos del formulario o petición POST
+                $nombrep = $_POST['nombrep'] ?? '';
+                $descripcion = $_POST['descripcion'] ?? '';
+                $precio = $_POST['precio'] ?? 0.0;
+                $talla = $_POST['talla'] ?? '';
+                $cantidadp = $_POST['cantidadp'] ?? 0;
+                $idc = $_POST['idc'] ?? 0;
+                $fotop = $_FILES['fotop'] ?? null;
+        
+                // Verificar que se haya subido una imagen
+                if ($fotop && $fotop['error'] === UPLOAD_ERR_OK) {
+                    // Verificar y crear directorio para subir imágenes si no existe
+                    $uploadDirectory = '../assets/img_prendas/';
+                    if (!is_dir($uploadDirectory)) {
+                        mkdir($uploadDirectory, 0755, true);
+                    }
+        
+                    // Obtener nombre de archivo y ruta de la imagen
+                    $fileName = $fotop['name'];
+                    $fileTmpName = $fotop['tmp_name'];
+                    $filePath = $uploadDirectory . basename($fileName);
+        
+                    // Mover archivo al directorio de destino
+                    if (move_uploaded_file($fileTmpName, $filePath)) {
+                        // Preparar consulta para insertar en tabla prendas
+                        $sqlPrenda = "INSERT INTO prendas (nombrep, descripcion, precio, talla, cantidadp, fotop, id_c) 
+                                      VALUES (?, ?, ?, ?, ?, ?, ?)";
+                        $stmtPrenda = $cx->prepare($sqlPrenda);
+                        $stmtPrenda->bind_param("ssssisi", $nombrep, $descripcion, $precio, $talla, $cantidadp, $filePath, $idc);
+        
+                        if ($stmtPrenda->execute()) {
+                            $valido['success'] = true;
+                            $valido['mensaje'] = "Producto agregado al carrito correctamente";
+                        } else {
+                            $valido['mensaje'] = "Error al registrar prenda: " . $stmtPrenda->error;
+                        }
 
-            echo json_encode($valido);
-            break;
+                      
+                        
+                    } else {
+                        $valido['mensaje'] = "Error al subir imagen.";
+                    }
+                } else {
+                    $valido['mensaje'] = "No se subió ninguna imagen o ocurrió un error.";
+                }
+        
+                echo json_encode($valido);
+                break;
+        
 
 
             case "selectAll":
@@ -62,22 +79,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             break;
 
-            case "delete":
-
-                $idp=$_POST['idp'];
-            
-                $sql="DELETE FROM prendas WHERE id_p=$idp";
-                if($cx->query($sql)){
-                   $valido['success']=true;
-                   $valido['mensaje']="SE ELIMINÓ CORRECTAMENTE";
-                }else{
-                    $valido['success']=false;
-                   $valido['mensaje']="ERROR AL ELIMINAR EN BD"; 
+            $idp = $_POST['idp'];
+    
+            // Respuesta por defecto
+            $valido = array(
+                'success' => false,
+                'mensaje' => 'Error al procesar la solicitud'
+            );
+        
+            // Verificar si el ID de la prenda es numérico
+            if (!is_numeric($idp)) {
+                $valido['mensaje'] = "ID de prenda no válido";
+            } else {
+                // Preparar la consulta SQL para eliminar la prenda con una consulta preparada
+                $sql = "DELETE FROM prendas WHERE id_p = ?";
+                $stmt = $cx->prepare($sql);
+                $stmt->bind_param("i", $idp); // "i" indica que el parámetro es un entero (ID de la prenda)
+                
+                // Ejecutar la consulta para eliminar la prenda
+                if ($stmt->execute()) {
+                    $valido['success'] = true;
+                    $valido['mensaje'] = "Se eliminó la prenda correctamente";
+                } else {
+                    $valido['mensaje'] = "Error al eliminar la prenda: " . $stmt->error;
                 }
+            }
+        
+            // Devolver respuesta en formato JSON
+            echo json_encode($valido);
             
-                echo json_encode($valido);
             
-            break;
             
             
             case "select":
