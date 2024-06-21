@@ -7,8 +7,8 @@
 body {
   font-family: "Arial", sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: rgb(1,0,8);
-background: radial-gradient(circle, rgba(1,0,8,1) 0%, rgba(176,53,65,1) 100%);
+  background: rgb(238,232,214);
+background: radial-gradient(circle, rgba(238,232,214,1) 0%, rgba(68,63,201,1) 100%);
 }
 
 ul {
@@ -48,15 +48,15 @@ p {
 
 img{
   height: 60px;
-  border-radius: 50%;
+  border-radius: 80px;
 }
 
 .showcase {
   width: 100%;
   height: 100vh;
   position: relative;
-background: rgb(238,232,214);
-background: radial-gradient(circle, rgba(238,232,214,1) 0%, rgba(68,63,201,1) 100%)
+  background: rgb(221, 220, 228);
+  background: radial-gradient(circle, rgba(1,0,8,1) 0%, rgba(201,63,77,1) 100%)
     no-repeat center center/cover;
   display: flex;
   justify-content: center;
@@ -69,7 +69,7 @@ background: radial-gradient(circle, rgba(238,232,214,1) 0%, rgba(68,63,201,1) 10
   z-index: 2;
   width: 470px;
   height: 500px;
-  background: rgba(33, 30, 36, 0.65);
+  background: rgba(156, 154, 158, 0.65);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -113,8 +113,8 @@ background: radial-gradient(circle, rgba(238,232,214,1) 0%, rgba(68,63,201,1) 10
   width: 95%;
   height: 50px;
   border-radius: 5px;
-  background: rgb(204, 139, 139);
-  color: #080808;
+  background: rgb(85, 18, 18);
+  color: #ece2e2;
   font-size: inherit;
   font-weight: bold;
   border: none;
