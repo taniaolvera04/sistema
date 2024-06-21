@@ -739,8 +739,11 @@ const cargarMovimientos = async () => {
                             <th>ID PRENDA</th>
                             <th>NOMBRE PRENDA</th>
                             <th>CANTIDAD</th>
+                            <th>PRECIO UNITARIO</th>
+                            <th>TOTAL A PAGAR</th>
                             <th>TALLA</th>
                             <th>FECHA</th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -752,9 +755,12 @@ const cargarMovimientos = async () => {
                         <td>${item.id_u}</td>
                         <td>${item.id_p}</td>
                         <td>${item.nombrep}</td>
-                        <td>${item.cantidadp}</td>
+                        <td>${item.cant}</td>
+                        <td>${item.precio}</td>
+                        <td>${item.total_a_pagar}</td>
                         <td>${item.talla}</td>
                         <td>${item.fecha}</td>
+                       
                     </tr>
                 `;
             });

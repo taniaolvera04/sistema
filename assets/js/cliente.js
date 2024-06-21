@@ -186,16 +186,18 @@ async function agregarCarrito(idProducto) {
             body: formData
         });
 
-        const json = await respuesta.json();
+        const textoRespuesta = await respuesta.text(); // Obtener el texto de la respuesta
+        console.log('Respuesta del servidor:', textoRespuesta); // Imprimir la respuesta recibida
+
+        const json = JSON.parse(textoRespuesta); // Intentar parsear la respuesta como JSON
 
         if (json.success) {
             Swal.fire({
-                title: '¡Agregado al carrito!',
+                title: '¡ÉXITO!',
                 text: json.mensaje,
                 icon: 'success'
             }).then(() => {
-                // Actualizar la interfaz del carrito mostrando los productos actualizados
-                obtenerCarrito();
+              obtenerCarrito();
             });
         } else {
             Swal.fire({
@@ -352,3 +354,4 @@ function limpiarCarrito() {
     const carritoDisplay = document.getElementById('total-carrito-display');
     carritoDisplay.innerHTML = '';
 }
+

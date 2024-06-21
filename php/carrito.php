@@ -48,21 +48,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($stmtUpdate->execute()) {
                         $valido['success'] = true;
-                        $valido['mensaje'] = "Cantidad del producto actualizada en el carrito";
+                        $valido['mensaje'] = "Cantidad de prenda actualizada en el carrito";
 
                         // Registrar movimiento de compra en la tabla movimientos
-                        $tipoMovimiento = "venta"; 
-                        $fechaHora = date("Y-m-d H:i:s"); 
-                        $sqlMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u) VALUES (?, ?, ?, ?)";
+                        $tipoMovimiento = "venta";
+                        $fechaHora = date("Y-m-d H:i:s");
+                        $sqlMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u, cant) VALUES (?, ?, ?, ?, ?)";
                         $stmtMovimiento = $cx->prepare($sqlMovimiento);
-                        $stmtMovimiento->bind_param("ssii", $fechaHora, $tipoMovimiento, $idProducto, $idUsuario);
+                        $stmtMovimiento->bind_param("ssiii", $fechaHora, $tipoMovimiento, $idProducto, $idUsuario, $nuevaCantidad);
 
                         if (!$stmtMovimiento->execute()) {
                             $valido['mensaje'] .= ". Error al registrar movimiento: " . $stmtMovimiento->error;
                         }
-
                     } else {
-                        $valido['mensaje'] = "Error al actualizar cantidad del producto en el carrito: " . $stmtUpdate->error;
+                        $valido['mensaje'] = "Error al actualizar cantidad de la prenda en el carrito: " . $stmtUpdate->error;
                     }
                 } else {
                     // Producto no existe en el carrito, insertar nuevo producto
@@ -86,21 +85,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         if ($stmtInsert->execute()) {
                             $valido['success'] = true;
-                            $valido['mensaje'] = "Producto agregado al carrito correctamente";
+                            $valido['mensaje'] = "Prenda agregada a carrito";
 
                             // Registrar movimiento de compra en la tabla movimientos
-                            $tipoMovimiento = "venta"; 
-                            $fechaHora = date("Y-m-d H:i:s"); 
-                            $sqlMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u) VALUES (?, ?, ?, ?)";
+                            $tipoMovimiento = "venta";
+                            $fechaHora = date("Y-m-d H:i:s");
+                            $sqlMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u, cant) VALUES (?, ?, ?, ?, ?)";
                             $stmtMovimiento = $cx->prepare($sqlMovimiento);
-                            $stmtMovimiento->bind_param("ssii", $fechaHora, $tipoMovimiento, $idProducto, $idUsuario);
+                            $stmtMovimiento->bind_param("ssiii", $fechaHora, $tipoMovimiento, $idProducto, $idUsuario, $cantidad);
 
                             if (!$stmtMovimiento->execute()) {
                                 $valido['mensaje'] .= ". Error al registrar movimiento: " . $stmtMovimiento->error;
                             }
-
                         } else {
-                            $valido['mensaje'] = "Error al agregar producto al carrito: " . $stmtInsert->error;
+                            $valido['mensaje'] = "Error al agregar prenda al carrito: " . $stmtInsert->error;
                         }
                     } else {
                         $valido['mensaje'] = "No se encontró el producto con ID $idProducto";

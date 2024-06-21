@@ -12,55 +12,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($action) {
 
         //METODOS PARA AGREGAR PRENDAS
-            case "guardar":
-                // Datos del formulario o petición POST
-                $nombrep = $_POST['nombrep'] ?? '';
-                $descripcion = $_POST['descripcion'] ?? '';
-                $precio = $_POST['precio'] ?? 0.0;
-                $talla = $_POST['talla'] ?? '';
-                $cantidadp = $_POST['cantidadp'] ?? 0;
-                $idc = $_POST['idc'] ?? 0;
-                $fotop = $_FILES['fotop'] ?? null;
-        
-                // Verificar que se haya subido una imagen
-                if ($fotop && $fotop['error'] === UPLOAD_ERR_OK) {
-                    // Verificar y crear directorio para subir imágenes si no existe
-                    $uploadDirectory = '../assets/img_prendas/';
-                    if (!is_dir($uploadDirectory)) {
-                        mkdir($uploadDirectory, 0755, true);
-                    }
-        
-                    // Obtener nombre de archivo y ruta de la imagen
-                    $fileName = $fotop['name'];
-                    $fileTmpName = $fotop['tmp_name'];
-                    $filePath = $uploadDirectory . basename($fileName);
-        
-                    // Mover archivo al directorio de destino
-                    if (move_uploaded_file($fileTmpName, $filePath)) {
-                        // Preparar consulta para insertar en tabla prendas
-                        $sqlPrenda = "INSERT INTO prendas (nombrep, descripcion, precio, talla, cantidadp, fotop, id_c) 
-                                      VALUES (?, ?, ?, ?, ?, ?, ?)";
-                        $stmtPrenda = $cx->prepare($sqlPrenda);
-                        $stmtPrenda->bind_param("ssssisi", $nombrep, $descripcion, $precio, $talla, $cantidadp, $filePath, $idc);
-        
-                        if ($stmtPrenda->execute()) {
-                            $valido['success'] = true;
-                            $valido['mensaje'] = "Producto agregado al carrito correctamente";
-                        } else {
-                            $valido['mensaje'] = "Error al registrar prenda: " . $stmtPrenda->error;
-                        }
-
-                      
-                        
-                    } else {
-                        $valido['mensaje'] = "Error al subir imagen.";
-                    }
+        case "guardar":
+            $a = $_POST['nombrep'];
+            $b = $_POST['descripcion'];
+            $c = $_POST['precio'];
+            $d = $_POST['talla'];
+            $e = $_POST['cantidadp'];
+            $h = $_POST['idc'];
+            
+            $fileName = $_FILES['fotop']['name'];
+            $fileTmpName = $_FILES['fotop']['tmp_name'];
+            $uploadDirectory = '../assets/img_prendas/'; 
+            
+            if (!is_dir($uploadDirectory)) {
+                mkdir($uploadDirectory, 0755, true);
+            }
+            
+            $filePath = $uploadDirectory . basename($fileName);
+            
+            if (move_uploaded_file($fileTmpName, $filePath)) {
+                
+        $sql = "INSERT INTO prendas (nombrep, descripcion, precio, talla, cantidadp, fotop, id_c) VALUES ('$a','$b','$c','$d','$e', '$filePath','$h')";
+                
+                if ($cx->query($sql)) {
+                    $valido['success'] = true;
+                    $valido['mensaje'] = "PRENDA SE GUARDÓ CORRECTAMENTE";
                 } else {
-                    $valido['mensaje'] = "No se subió ninguna imagen o ocurrió un error.";
+                    $valido['mensaje'] = "ERROR AL GUARDAR PRENDA EN BD";
                 }
-        
-                echo json_encode($valido);
-                break;
+            } else {
+                $valido['mensaje'] = "ERROR AL SUBIR IMAGEN";
+            }
+
+            echo json_encode($valido);
+            break;
         
 
 
@@ -326,9 +311,11 @@ break;
 
             case "selectMov":
                 $sql = "SELECT m.id_u AS id_u,
-                               m.id_p AS id_p,
+                              m.id_p AS id_p,
                                pr.nombrep AS nombrep,
-                               pr.cantidadp AS cantidadp,
+                               m.cant AS cant,
+                               pr.precio AS precio,
+                               m.id_p AS total_a_pagar,
                                pr.talla AS talla,
                                m.fecha AS fecha
                         FROM movimientos m
@@ -339,13 +326,18 @@ break;
                 $res = $cx->query($sql);
                 if ($res && $res->num_rows > 0) {
                     while ($row = $res->fetch_assoc()) {
+                        $total_pagar = $row['cant'] * $row['precio'];
+
                         $registros['data'][] = array(
                             'id_u' => $row['id_u'],
                             'id_p' => $row['id_p'],
                             'nombrep' => $row['nombrep'],
-                            'cantidadp' => $row['cantidadp'],
+                            'cant' => $row['cant'],
+                            'precio' => $row['precio'],
+                            'total_a_pagar' => $total_pagar,
                             'talla' => $row['talla'],
                             'fecha' => $row['fecha']
+                           
                         );
                     }
                     $valido['success'] = true;
