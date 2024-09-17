@@ -1,13 +1,5 @@
 var action=document.getElementById("action");
 
-
-var btnUsu=document.getElementById("btnUsu");
-var btnPro=document.getElementById("btnPro");
-var btnMov=document.getElementById("btnMov");
-var btnDa=document.getElementById("btnDa");
-
-
-
 var sesion=localStorage.getItem('usuario') || "null";
 
 if(sesion=="null"){
@@ -102,19 +94,17 @@ const guardarPerfil = async (event) => {
 
 //REGISTRAR PRENDAS Y UNA IMAGEN EN BASE DE DATOS
 
-const guardarPrendas = async () => {
-    let nombrep = document.getElementById('nombrep').value;
+const guardarAlbum = async () => {
+    let nombrea = document.getElementById('nombrea').value;
     let descripcion = document.getElementById('descripcion').value;
     let precio = document.getElementById('precio').value;
-    let talla = document.getElementById('talla').value;
-    let cantidadp = document.getElementById('cantidadp').value;
-    let fotop = document.getElementById('fotop').files[0]; 
+    let cantidada = document.getElementById('cantidada').value;
+    let fotoa = document.getElementById('fotoa').files[0];
     let idc = document.getElementById('idc').value;
 
     const usuario = localStorage.getItem('usuario'); 
-    
 
-    if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || cantidadp.trim() == "" || talla.trim() == "" || !fotop || idc.trim() == "" ) {
+    if (nombrea.trim() === "" || descripcion.trim() === "" || precio.trim() === "" || cantidada.trim() === "" || !fotoa || idc.trim() === "" ) {
         Swal.fire({
             title: "ERROR",
             text: "Falta completar campos o seleccionar una imagen",
@@ -124,13 +114,12 @@ const guardarPrendas = async () => {
     }
 
     let datos = new FormData();
-    datos.append("nombrep", nombrep);
+    datos.append("nombrea", nombrea);
     datos.append("descripcion", descripcion);
     datos.append("precio", precio);
-    datos.append("cantidadp", cantidadp);
-    datos.append("talla", talla);
-    datos.append("fotop", fotop); 
-    datos.append("idc", idc); 
+    datos.append("cantidada", cantidada);
+    datos.append("fotoa", fotoa);
+    datos.append("idc", idc);
     datos.append('usuario', usuario);
     datos.append('action', 'guardar');
 
@@ -138,14 +127,16 @@ const guardarPrendas = async () => {
         let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
         let json = await respuesta.json();
 
-        if (json.success == true) {
+        if (json.success) {
             Swal.fire({
                 title: "¡REGISTRO ÉXITOSO!",
                 text: json.mensaje,
                 icon: "success"
             });
-            limpiarP();
-            cargarPrendas();
+
+            limpiarP(); 
+            cargarAlbum(); 
+            bootstrap.Modal.getInstance(document.getElementById("addA")).hide();
         } else {
             Swal.fire({
                 title: "ERROR",
@@ -154,7 +145,7 @@ const guardarPrendas = async () => {
             });
         }
     } catch (error) {
-        console.error('Error al guardar la prenda:', error);
+        console.error('Error al guardar el álbum:', error);
         Swal.fire({
             title: "ERROR",
             text: "Hubo un problema al procesar la solicitud",
@@ -164,30 +155,41 @@ const guardarPrendas = async () => {
 }
 
 
+
+const limpiarP=()=>{
+    document.querySelector("#ida").value="";
+    document.querySelector("#nombrea").value="";
+    document.querySelector("#descripcion").value="";
+    document.querySelector("#precio").value="";
+    document.querySelector("#cantidada").value="";
+    document.getElementById("album-preview").src="";
+}
+
+
+
 //TABLA PARA CARGAR PRENDAS Y BOTÓN QUE ABRE MODAL
 
-const cargarPrendas = async () => {
+const cargarAlbum = async () => {
     const datos = new FormData();
     datos.append("action", "selectAll");
     let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
     let json = await respuesta.json();
 
     let tablaHTML = `
-        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addPrenda">
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addA">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill mx-2" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
             </svg>
-            Agregar Prenda
+            Agregar Álbum
         </button><br>
 
-        <table id="tablaPrendas" class="table table-striped w-75 text-center">
+        <table id="tablaA" class="table table-striped w-75 text-center">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>NOMBRE</th>
                     <th>DESCRIPCIÓN</th>
                     <th>PRECIO</th>
-                    <th>TALLA</th>
                     <th>CANTIDAD</th>
                     <th>IMAGEN</th>
                     <th>ID_C</th>
@@ -205,16 +207,15 @@ const cargarPrendas = async () => {
                 <td>${item[2]}</td>
                 <td>${item[3]}</td>
                 <td>${item[4]}</td>
-                <td>${item[5]}</td>
-                <td><img src="img_prendas/${item[6]}" height="90px"></td>
-                <td>${item[7]}</td>
+                <td><img src="img_album/${item[5]}" height="90px"></td>
+                <td>${item[6]}</td>
                 <td colspan="2">
-                    <button class="btn btn-danger" onclick="eliminarPrenda(${item[0]})">
+                    <button class="btn btn-danger" onclick="eliminarA(${item[0]})">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
                         </svg>
                     </button>
-                    <button class="btn btn-info" onclick="mostrarPrenda(${item[0]})" data-bs-toggle="modal" data-bs-target="#editPrenda">
+                    <button class="btn btn-info" onclick="mostrarA(${item[0]})" data-bs-toggle="modal" data-bs-target="#editPrenda">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
@@ -229,11 +230,11 @@ const cargarPrendas = async () => {
 
     document.getElementById("action").innerHTML = tablaHTML;
 
-    if ($.fn.DataTable.isDataTable("#tablaPrendas")) {
-        $("#tablaPrendas").DataTable().destroy();
+    if ($.fn.DataTable.isDataTable("#tablaA")) {
+        $("#tablaA").DataTable().destroy();
     }
 
-    $("#tablaPrendas").DataTable({
+    $("#tablaA").DataTable({
         lengthMenu: [5, 10, 25, 50, 100],
         language: {
             lengthMenu: "Mostrar _MENU_ registros por página",
@@ -256,9 +257,9 @@ const cargarPrendas = async () => {
 
 //ELIMINAR PRENDAS
 
-const eliminarPrenda = async (idp) => {
+const eliminarA = async (ida) => {
     Swal.fire({
-        title: "¿Estás seguro de eliminar esta prenda?",
+        title: "¿Estás seguro de eliminar este álbum?",
         icon: "question",
         showDenyButton: true,
         confirmButtonText: "Si, estoy seguro",
@@ -268,7 +269,7 @@ const eliminarPrenda = async (idp) => {
             try {
                 // Crear un nuevo objeto FormData para esta solicitud de eliminación
                 let formData = new FormData();
-                formData.append('idp', idp); // Agregar el ID de la prenda
+                formData.append('ida', ida); // Agregar el ID de la prenda
                 formData.append('action', 'delete'); // Agregar la acción requerida
                 
                 // Realizar la solicitud POST al servidor
@@ -302,10 +303,10 @@ const eliminarPrenda = async (idp) => {
                     throw new Error(`HTTP error! status: ${respuesta.status}`);
                 }
             } catch (error) {
-                console.error('Error al eliminar la prenda:', error);
+                console.error('Error al eliminar la álbum:', error);
                 Swal.fire({
                     title: "Error",
-                    text: "Hubo un problema al intentar eliminar la prenda",
+                    text: "Hubo un problema al intentar eliminar el álbum",
                     icon: "error"
                 });
             }
@@ -318,21 +319,20 @@ const eliminarPrenda = async (idp) => {
 
 //MOSTRAR INFORMACIÓN DE PRENDA EN MODAL
 
-const mostrarPrenda=async(idp)=>{
+const mostrarA=async(ida)=>{
     let datos=new FormData();
-    datos.append("idp",idp);
+    datos.append("ida",ida);
     datos.append('action','select');
     
     let respuesta=await fetch("php/metodosA.php",{method:'POST',body:datos});
     let json=await respuesta.json();
 
-    document.querySelector("#idp").value=json.idp;
-    document.querySelector("#enombrep").value=json.nombrep;
+    document.querySelector("#ida").value=json.ida;
+    document.querySelector("#enombrea").value=json.nombrea;
     document.querySelector("#edescripcion").value=json.descripcion;
     document.querySelector("#eprecio").value=json.precio;
-    document.querySelector("#etalla").value=json.talla;
-    document.querySelector("#ecantidadp").value=json.cantidadp;
-    document.getElementById("eprenda-preview").src="img_prendas/"+json.fotop;
+    document.querySelector("#ecantidada").value=json.cantidada;
+    document.getElementById("ealbum-preview").src="img_album/"+json.fotoa;
     document.querySelector("#eidc").value=json.idc;
    
 }
@@ -340,17 +340,16 @@ const mostrarPrenda=async(idp)=>{
 
 //ACTUALIZAR PRENDAS
 
-const actualizarPrendas = async () => {
-    var idp = document.querySelector("#idp").value;
-    var nombrep = document.querySelector("#enombrep").value;
+const actualizarAlbum = async () => {
+    var ida = document.querySelector("#ida").value;
+    var nombrea = document.querySelector("#enombrea").value;
     var descripcion = document.querySelector("#edescripcion").value;
     var precio = document.querySelector("#eprecio").value;
-    var talla = document.querySelector("#etalla").value;
-    var cantidadp = document.querySelector("#ecantidadp").value;
-    var fotop = document.querySelector("#efotop").files[0]; 
+    var cantidada = document.querySelector("#ecantidada").value;
+    var fotoa = document.querySelector("#efotoa").files[0]; 
     var idc = document.querySelector("#eidc").value;
     
-    if (nombrep.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || talla.trim() == "" || cantidadp.trim() == ""  || idc.trim() == "") {
+    if (nombrea.trim() == "" || descripcion.trim() == "" || precio.trim() == "" || cantidada.trim() == ""  || idc.trim() == "") {
         Swal.fire({
             title: "ERROR",
             text: "Tienes campos vacíos",
@@ -360,14 +359,13 @@ const actualizarPrendas = async () => {
     }
     
     let datos = new FormData();
-    datos.append("idp", idp);
-    datos.append("nombrep", nombrep);
+    datos.append("ida", ida);
+    datos.append("nombrea", nombrea);
     datos.append("descripcion", descripcion);
     datos.append("precio", precio);
-    datos.append("talla", talla);
-    datos.append("cantidadp", cantidadp);
+    datos.append("cantidada", cantidada);
     datos.append("idc", idc);
-    datos.append("fotop", fotop); 
+    datos.append("fotoa", fotoa); 
     datos.append('action', 'update');
     
     try {
@@ -380,9 +378,9 @@ const actualizarPrendas = async () => {
             Swal.fire({ title: "ERROR", text: json.mensaje, icon: "error" });
         }
         
-        cargarPrendas(); 
+        cargarAlbum(); 
     } catch (error) {
-        console.error('Error al actualizar la prenda:', error);
+        console.error('Error al actualizar el álbum:', error);
         Swal.fire({ title: "ERROR", text: "Hubo un problema al procesar la solicitud", icon: "error" });
     }
 }
@@ -391,8 +389,8 @@ const actualizarPrendas = async () => {
 // MOSTRAR FOTO-PREVIEW EN MODAL
 
 function previewImage() {
-    const fotoInput = document.getElementById('fotop');
-    const preview = document.getElementById('prenda-preview');
+    const fotoInput = document.getElementById('fotoa');
+    const preview = document.getElementById('album-preview');
     
     if (fotoInput.files && fotoInput.files[0]) {
         const reader = new FileReader();
@@ -408,8 +406,8 @@ function previewImage() {
 
 
 function epreviewImage() {
-    const fotoInput = document.getElementById('efotop');
-    const preview = document.getElementById('eprenda-preview');
+    const fotoInput = document.getElementById('efotoa');
+    const preview = document.getElementById('ealbum-preview');
     
     if (fotoInput.files && fotoInput.files[0]) {
         const reader = new FileReader();
@@ -652,15 +650,6 @@ const actualizarCategoria = async () => {
 }    
 
 
-const limpiarP=()=>{
-    document.querySelector("#idp").value="";
-    document.querySelector("#nombrep").value="";
-    document.querySelector("#descripcion").value="";
-    document.querySelector("#precio").value="";
-    document.querySelector("#talla").value="";
-    document.querySelector("#cantidadp").value="";
-    document.getElementById("prenda-preview").src="";
-}
 
 
 
@@ -699,15 +688,6 @@ const mostrarUsu=async()=>{
     });
 
     tablaHTML += `</tbody></table>
-
-    <a href="assets/reportes/generar_pdf.php">
-    <button type="submit" class="btn btn-primary" id="p">GENERAR PDF USUARIOS
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
-  <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
-  <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
-</svg>
-    </button>
-</a>
     `;
 
     document.getElementById("action").innerHTML = tablaHTML;
@@ -743,9 +723,9 @@ const mostrarUsu=async()=>{
 
 //MOSTRAR TODOS LOS MOVIMIENTOS
 
-const cargarMovimientos = async () => {
+const cargarOrden = async () => {
     const datos = new FormData();
-    datos.append("action", "selectMov");
+    datos.append("action", "selectOrd");
 
     try {
         let respuesta = await fetch("php/metodosA.php", { method: 'POST', body: datos });
@@ -813,97 +793,3 @@ const cargarMovimientos = async () => {
         console.error("Error en la solicitud:", error);
     }
 };
-
-
-
-
-
-//MOVIMIENTOS
-
-const graficoMovimientos = () => {
-    // Limpiar el contenedor de acción
-    action.innerHTML = '';
-
-    // Crear instancia de FormData para enviar datos
-    const formData = new FormData();
-    formData.append('action', 'graficasMov'); // Agregar la acción que deseas ejecutar en PHP
-
-    // Realizar la solicitud AJAX utilizando fetch
-    fetch('php/metodosA.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Datos recibidos:', data);
-
-        if (data.success) {
-            const movimientos = data.data;
-            const fechas = Object.keys(movimientos).sort();
-            const ventasPorDia = fechas.map(fecha => movimientos[fecha].ventas || 0);
-            const comprasPorDia = fechas.map(fecha => movimientos[fecha].compras || 0);
-
-            // Crear gráfico de ventas por día
-            let canvasVentas = document.createElement('canvas');
-            canvasVentas.id = 'canvasVentas';
-            canvasVentas.height = 90;
-            action.appendChild(canvasVentas);
-
-            let ctxVentas = canvasVentas.getContext('2d');
-            let chartVentas = new Chart(ctxVentas, {
-                type: 'bar',
-                data: {
-                    labels: fechas,
-                    datasets: [{
-                        label: 'Ventas por Día',
-                        data: ventasPorDia,
-                        backgroundColor: '#44F59C',
-                        borderColor: 'green',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Crear gráfico de compras por día
-            let canvasCompras = document.createElement('canvas');
-            canvasCompras.id = 'canvasCompras';
-            canvasCompras.height = 90;
-            action.appendChild(canvasCompras);
-
-            let ctxCompras = canvasCompras.getContext('2d');
-            let chartCompras = new Chart(ctxCompras, {
-                type: 'bar',
-                data: {
-                    labels: fechas,
-                    datasets: [{
-                        label: 'Compras por Día',
-                        data: comprasPorDia,
-                        backgroundColor: '#F54444',
-                        borderColor: 'red',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        } else {
-            console.error('Error al obtener los datos de movimientos:', data.mensaje);
-        }
-    })
-    .catch(error => {
-        console.error('Error en la solicitud AJAX:', error);
-    });
-};
-

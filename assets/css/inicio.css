@@ -3,31 +3,31 @@ img{
     border-radius: 100px;
 }
 .profile-photo{
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
 }
 body{
-  background: rgb(1,0,8);
-background: radial-gradient(circle, rgba(1,0,8,1) 0%, rgba(201,63,77,1) 100%);
+  background: rgb(255, 199, 234);
 }
 
 .btn-primary {
-    width: 200px;
+    width: 230px;
     height: 80px;
-    border: 2px solid #6d0d0d;
+    border: 2px solid #cf61cf;
     border-radius: 45px;
     transition: all 0.3s;
     cursor: pointer;
-    background:  #680e0e;
-    font-size: 1.0em;
+    background:  #cf61cf;
+    font-size: 1.1em;
     font-weight: 550;
     font-family: 'Montserrat', sans-serif;
   }
   
   .btn-primary:hover {
-    background: #000000;
+    background:#75acd1;
     color: white;
     font-size: 1.2em;
-    border: 2px solid #000000;
+    border: 2px solid  #75acd1;
+
   }

@@ -15,26 +15,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //METODOS PARA AGREGAR PRENDAS
         case "guardar":
             // Obtener los datos del formulario
-            $a = $_POST['nombrep'] ?? '';
+            $a = $_POST['nombrea'] ?? '';
             $b = $_POST['descripcion'] ?? '';
             $c = $_POST['precio'] ?? 0;
-            $d = $_POST['talla'] ?? '';
-            $e = $_POST['cantidadp'] ?? 0;
-            $h = $_POST['idc'] ?? '';
+            $d = $_POST['cantidada'] ?? 0;
+            $e = $_POST['idc'] ?? '';
             $usuario = $_POST['usuario'] ?? ''; // Nombre de usuario
-
+        
             // Manejo de la imagen
-            $fileName = $_FILES['fotop']['name'];
-            $fileTmpName = $_FILES['fotop']['tmp_name'];
-            $uploadDirectory = '../assets/img_prendas/';
-
+            $fileName = $_FILES['fotoa']['name'];
+            $fileTmpName = $_FILES['fotoa']['tmp_name'];
+            $uploadDirectory = '../assets/img_album/';
+        
             // Verificar y crear directorio si no existe
             if (!is_dir($uploadDirectory)) {
                 mkdir($uploadDirectory, 0755, true);
             }
-
+        
             $filePath = $uploadDirectory . basename($fileName);
-
+        
             // Mover la imagen subida al directorio deseado
             if (move_uploaded_file($fileTmpName, $filePath)) {
                 // Obtener el ID del usuario
@@ -43,40 +42,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtUsuario->bind_param("s", $usuario);
                 $stmtUsuario->execute();
                 $resultadoUsuario = $stmtUsuario->get_result();
-
+        
                 if ($resultadoUsuario->num_rows > 0) {
                     $rowUsuario = $resultadoUsuario->fetch_assoc();
                     $id_u = $rowUsuario['id_u'];
-
+        
                     // Insertar los datos de la prenda en la base de datos
-                    $sqlInsertPrenda = "INSERT INTO prendas (nombrep, descripcion, precio, talla, cantidadp, fotop, id_c) 
-                                        VALUES ('$a', '$b', $c, '$d', $e, '$filePath', $h)";
-
-                    if ($cx->query($sqlInsertPrenda)) {
-                        // Obtener el ID de la prenda recién insertada
-                        $id_p = $cx->insert_id;
-
-                        // Insertar el movimiento en la tabla movimientos como compra
-                        $fechaHora = date("Y-m-d H:i:s");
-                        $sqlInsertMovimiento = "INSERT INTO movimientos (fecha, tipomov, id_p, id_u, cant) 
-                                               VALUES ('$fechaHora', 'compra', $id_p, $id_u, $e)";
-
-                        if ($cx->query($sqlInsertMovimiento)) {
-                            $valido['success'] = true;
-                            $valido['mensaje'] = "Prenda y movimiento de compra registrados correctamente";
-                        } else {
-                            $valido['mensaje'] = "Error al registrar el movimiento de compra en la base de datos: " . $cx->error;
-                        }
+                    $sqlInsertAlbum = "INSERT INTO albumes (nombrea, descripcion, precio, cantidada, fotoa, id_c) 
+                                        VALUES ('$a', '$b', $c, $d, '$filePath', $e)";
+        
+                    // Ejecutar la consulta
+                    if ($cx->query($sqlInsertAlbum) === TRUE) {
+                        $valido['success'] = true;
+                        $valido['mensaje'] = "Registro exitoso";
                     } else {
-                        $valido['mensaje'] = "Error al guardar la prenda en la base de datos: " . $cx->error;
+                        $valido['success'] = false;
+                        $valido['mensaje'] = "Error en la consulta SQL: " . $cx->error;
                     }
                 } else {
                     $valido['mensaje'] = "No se encontró el usuario '$usuario'";
                 }
             } else {
-                $valido['mensaje'] = "Error al subir la imagen de la prenda";
+                $valido['mensaje'] = "Error al subir la imagen del álbum";
             }
-
+        
             echo json_encode($valido);
             break;
         
@@ -84,12 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             case "selectAll":
 
-                $sql="SELECT * FROM prendas";
+                $sql="SELECT * FROM albumes";
                 $registros=array('data'=>array());
                 $res=$cx->query($sql);
                 if($res->num_rows>0){
                     while($row=$res->fetch_array()){
-                        $registros['data'][]=array($row[0],$row[1],$row[2],$row[3],$row[4],$row[5],$row[6],$row[7]);
+                        $registros['data'][]=array($row[0],$row[1],$row[2],$row[3],$row[4],$row[5]);
                     }
                 }
                 
@@ -97,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             break;
 
-            $idp = $_POST['idp'];
+            $ida = $_POST['ida'];
     
             // Respuesta por defecto
             $valido = array(
@@ -107,19 +96,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
             // Verificar si el ID de la prenda es numérico
             if (!is_numeric($idp)) {
-                $valido['mensaje'] = "ID de prenda no válido";
+                $valido['mensaje'] = "ID de album no válido";
             } else {
                 // Preparar la consulta SQL para eliminar la prenda con una consulta preparada
-                $sql = "DELETE FROM prendas WHERE id_p = ?";
+                $sql = "DELETE FROM albumes WHERE id_a = ?";
                 $stmt = $cx->prepare($sql);
-                $stmt->bind_param("i", $idp); // "i" indica que el parámetro es un entero (ID de la prenda)
+                $stmt->bind_param("i", $ida); // "i" indica que el parámetro es un entero (ID de la prenda)
                 
                 // Ejecutar la consulta para eliminar la prenda
                 if ($stmt->execute()) {
                     $valido['success'] = true;
-                    $valido['mensaje'] = "Se eliminó la prenda correctamente";
+                    $valido['mensaje'] = "Se eliminó el album correctamente";
                 } else {
-                    $valido['mensaje'] = "Error al eliminar la prenda: " . $stmt->error;
+                    $valido['mensaje'] = "Error al eliminar el album: " . $stmt->error;
                 }
             }
         
@@ -133,16 +122,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
                 $valido['success']=array('success'=>false,
             'mensaje'=>"",
-            'idp'=>"",
-            'nombrep'=>"",
+            'ida'=>"",
+            'nombrea'=>"",
             'descripcion'=>"",
             'precio'=>"",
-            'talla'=>"",
-            'cantidadp'=>"",
+            'cantidada'=>"",
             'idc'=>"",);
             
-            $idp=$_POST['idp'];
-                $sql="SELECT * FROM prendas WHERE id_p=$idp";
+            $ida=$_POST['ida'];
+                $sql="SELECT * FROM prendas WHERE id_a=$ida";
             
                 $res=$cx->query($sql);
                 $row=$res->fetch_array();
@@ -150,14 +138,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $valido['success']==true;
                 $valido['mensaje']="SE ENCONTRÓ PRODUCTO";
             
-                $valido['idp']=$row[0];
-                $valido['nombrep']=$row[1];
+                $valido['ida']=$row[0];
+                $valido['nombrea']=$row[1];
                 $valido['descripcion']=$row[2];
                 $valido['precio']=$row[3];
-                $valido['talla']=$row[4];
-                $valido['cantidadp']=$row[5];
-                $valido['fotop']=$row[6];
-                $valido['idc']=$row[7];
+                $valido['cantidada']=$row[4];
+                $valido['fotoa']=$row[5];
+                $valido['idc']=$row[6];
             
             echo json_encode($valido);
             
@@ -166,17 +153,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
 case "update":
 
-    $idp=$_POST['idp'];
-    $a=$_POST['nombrep'];
+    $ida=$_POST['ida'];
+    $a=$_POST['nombrea'];
     $b=$_POST['descripcion'];
     $c=$_POST['precio'];
-    $d=$_POST['talla'];
-    $e=$_POST['cantidadp'];
-    $h=$_POST['idc'];
+    $d=$_POST['cantidada'];
+    $e=$_POST['idc'];
 
-    $fileName = $_FILES['fotop']['name'];
-    $fileTmpName = $_FILES['fotop']['tmp_name'];
-    $uploadDirectory = '../assets/img_prendas/'; 
+    $fileName = $_FILES['fotoa']['name'];
+    $fileTmpName = $_FILES['fotoa']['tmp_name'];
+    $uploadDirectory = '../assets/img_album/'; 
     
     if (!is_dir($uploadDirectory)) {
         mkdir($uploadDirectory, 0755, true);
@@ -186,18 +172,17 @@ case "update":
     
     if (move_uploaded_file($fileTmpName, $filePath)) {
 
-    $sql="UPDATE prendas SET nombrep='$a',
+    $sql="UPDATE albumes SET nombrea='$a',
     descripcion='$b',
     precio='$c',
-    talla='$d',
-    cantidadp='$e',
-    fotop='$filePath',
-    id_c='$h'
-    WHERE id_p=$idp";
+    cantidada='$d',
+    fotoa='$filePath',
+    id_c='$e'
+    WHERE id_a=$ida";
 
     if($cx->query($sql)){
        $valido['success']=true;
-       $valido['mensaje']="SE ACTUALIZÓ CORRECTAMENTE EL PRODUCTO";
+       $valido['mensaje']="SE ACTUALIZÓ CORRECTAMENTE EL ÁLBUM";
     }else{
         $valido['success']=false;
        $valido['mensaje']="ERROR AL ACTUALIZAR EN BD"; 
@@ -286,9 +271,9 @@ break;
     
         case "delete":
 
-            $idp=$_POST['idp'];
+            $ida=$_POST['ida'];
         
-            $sql="DELETE FROM prendas WHERE id_p=$idp";
+            $sql="DELETE FROM albumes WHERE id_a=$ida";
             if($cx->query($sql)){
                $valido['success']=true;
                $valido['mensaje']="SE ELIMINÓ CORRECTAMENTE";
@@ -381,40 +366,6 @@ break;
 
 
  //MOVIMIENTOS
-
- case "graficasMov":
-    $sql = "SELECT m.fecha AS fecha, m.tipomov AS tipomov FROM movimientos m";
-    $registros = array();
-
-    $res = $cx->query($sql);
-    if ($res && $res->num_rows > 0) {
-        while ($row = $res->fetch_assoc()) {
-            // Obtener solo la fecha (sin la hora) para agrupar por día
-            $fecha = substr($row['fecha'], 0, 10);
-
-            // Contar el número de ventas y compras por día
-            if (!isset($registros[$fecha])) {
-                $registros[$fecha] = array('ventas' => 0, 'compras' => 0);
-            }
-
-            if ($row['tipomov'] == 'venta') {
-                $registros[$fecha]['ventas']++;
-            } else if ($row['tipomov'] == 'compra') {
-                $registros[$fecha]['compras']++;
-            }
-        }
-        $valido['success'] = true;
-        $valido['mensaje'] = "Consulta exitosa";
-        $valido['data'] = $registros;
-    } else {
-        $valido['success'] = false;
-        $valido['mensaje'] = "No se encontraron registros";
-    }
-
-    echo json_encode($valido);
-    break;
-
-
             
                 default:
                     echo json_encode(["error" => "Acción no válida"]);

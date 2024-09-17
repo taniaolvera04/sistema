@@ -16,18 +16,17 @@
 
 <body class="text-center" onload="cargarNombre()">
    
-    <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+  <nav class="navbar" style="background-color: #d79cff;">
         <div class="container-fluid">
-          <img src="assets/img/dark.png" alt="Logo" width="57" height="73" class="d-inline-block">
-            <span class="navbar-brand h1">SISTEMA DE INVENTARIO</span>
-            
-
+          <img src="assets/img/logo.png" alt="Logo" width="90" height="90"  class="d-inline-block">
+          <span class="navbar-brand h1 text-white" id="h">STRAWBERRY BEAT KINGDOM — ADMIN</span>
+          
             <span class="navbar-text">
 
               <a href="perfilA.html" class="text-decoration-none">
               <img src="assets/img/p.png" id="foto_perfil" class="profile-photo">
               
-              <span class="text-white mx-3 h6" id="user">HOLA</span>
+              <span class="text-white mx-3 h5" id="user">HOLA</span>
             </a>
             
               <button class="btn btn-danger" id="salir"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
@@ -38,9 +37,17 @@
       </nav><br>
 
 
-      <button class="btn btn-primary btn-block mx-2" onclick="cargarPrendas()"> PRENDAS
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-standing-dress" viewBox="0 0 16 16">
-        <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 12.25V12h1v3.25a.75.75 0 0 0 1.5 0V12h1l-1-5v-.215a.285.285 0 0 1 .56-.078l.793 2.777a.711.711 0 1 0 1.364-.405l-1.065-3.461A3 3 0 0 0 8.784 3.5H7.216a3 3 0 0 0-2.868 2.118L3.283 9.079a.711.711 0 1 0 1.365.405l.793-2.777a.285.285 0 0 1 .56.078V7l-1 5h1v3.25a.75.75 0 0 0 1.5 0Z"/>
+      <button class="btn btn-primary btn-block mx-2" onclick="cargarAlbum()"> ÁLBUMES
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-vinyl" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+          <path d="M8 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4M4 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0"/>
+          <path d="M9 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+        </svg>
+    </button>
+
+    <button class="btn btn-primary btn-block mx-2" onclick="mostrarUsu()"> USUARIOS 
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
       </svg>
     </button>
 
@@ -51,23 +58,11 @@
         </svg> 
     </button>
 
-      <button class="btn btn-primary btn-block mx-2" onclick="mostrarUsu()"> USUARIOS 
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-        </svg>
-      </button>
+    
 
-      <button class="btn btn-primary btn-block mx-2" onclick="cargarMovimientos()"> MOVIMIENTOS 
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
-          <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
-          <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
-          <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
-        </svg>
-      </button>
-
-      <button class="btn btn-primary btn-block mx-2" onclick="graficoMovimientos()"> DASHBOARD  
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
-          <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z"/>
+      <button class="btn btn-primary btn-block mx-2" onclick="cargarOrden()"> ORDENES 
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket3-fill" viewBox="0 0 16 16">
+          <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM2.468 15.426.943 9h14.114l-1.525 6.426a.75.75 0 0 1-.729.574H3.197a.75.75 0 0 1-.73-.574z"/>
         </svg>
       </button>
 
@@ -76,37 +71,37 @@
       <div class="container-fluid w-75 m-auto">
         <div class="card text-center mt-4">
           <div class="card-header">
-              <img src="assets/img/dark.png" height="60px">
+              <img src="assets/img/logo.png" height="60px">
            
           </div>
   
           <div class="card-body">
               <div id="action">            
-                <img src="assets/img/dark.png"  id="eslogan" style="max-width: 100%; width:200px ; height:200px">
+                <img src="assets/img/logo.png"  id="eslogan" style="max-width: 100%; width:200px ; height:200px">
               </div>
           </div>
   
           <div class="card-footer text-body-secondary">
-            SISTEMA DE INVENTARIO
+            TIENDA DE ÁLBUMES DE BTS
           </div>
       </div>
   </div>
 
 
-<!--MODAL PARA AGREGAR UNA PRENDA-->
+<!--MODAL PARA AGREGAR UN ÁLBUM-->
   
-  <div class="modal fade" id="addPrenda" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addA" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-ls">
         <div class="modal-content">
         <div class="modal-header">
-            <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">AGREGAR PRENDAS</h1>
+            <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">AGREGAR ÁLBUMES</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <form>
                 <div class="mb-2">
-                    <label  class="form-label">NOMBRE DE PRENDA</label>
-                    <input type="text" class="form-control text-center" id="nombrep">
+                    <label  class="form-label">NOMBRE DE ÁLBUM</label>
+                    <input type="text" class="form-control text-center" id="nombrea">
                 </div>
                 <div class="mb-2">
                     <label  class="form-label">DESCRIPCIÓN</label>
@@ -116,18 +111,15 @@
                   <label  class="form-label">PRECIO</label>
                   <input type="number" class="form-control text-center" id="precio">
               </div>
-                <div class="mb-2">
-                    <label  class="form-label">TALLA</label>
-                    <input type="text" class="form-control text-center" id="talla">
-                </div>
+            
                 <div class="mb-2">
                   <label  class="form-label">CANTIDAD</label>
-                  <input type="number" class="form-control text-center" id="cantidadp">
+                  <input type="number" class="form-control text-center" id="cantidada">
               </div>
                 <div>
                     <label  class="form-label">FOTO</label>
-                    <input type="file" name="fotop" class="form-control" id="fotop" onchange="previewImage()">
-                    <img id="prenda-preview" src="#" style="max-width: 100%; max-height: 140px; display: none; margin: 0 auto;">
+                    <input type="file" name="fotoa" class="form-control" id="fotoa" onchange="previewImage()">
+                    <img id="album-preview" src="#" style="max-width: 100%; max-height: 140px; display: none; margin: 0 auto;">
                 </div>
                 <div>
                   <label  class="form-label">ID_C</label>
@@ -137,7 +129,7 @@
         </div>
         <div class="modal-footer">
 
-            <button type="button" class="btn btn-success" onclick="guardarPrendas()">   GUARDAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 16 16">
+            <button type="button" class="btn btn-success" onclick="guardarAlbum()">   GUARDAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 16 16">
               <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>
               <path d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>
             </svg></button>
@@ -153,18 +145,18 @@
 
 <!--MODAL PARA EDITAR UNA PRENDA-->
   
-<div class="modal fade" id="editPrenda" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editA" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-ls">
       <div class="modal-content">
       <div class="modal-header">
-          <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">ACTUALIZAR PRENDAS</h1>
+          <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">ACTUALIZAR ÁLBUMES</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
           <form>
               <div class="mb-2">
-                  <label  class="form-label">NOMBRE DE PRENDA</label>
-                  <input type="text" class="form-control text-center" id="enombrep">
+                  <label  class="form-label">NOMBRE DE ÁLBUM</label>
+                  <input type="text" class="form-control text-center" id="enombrea">
               </div>
               <div class="mb-2">
                   <label  class="form-label">DESCRIPCIÓN</label>
@@ -174,18 +166,15 @@
                 <label  class="form-label">PRECIO</label>
                 <input type="number" class="form-control text-center" id="eprecio">
             </div>
-              <div class="mb-2">
-                  <label  class="form-label">TALLA</label>
-                  <input type="text" class="form-control text-center" id="etalla">
-              </div>
+
               <div class="mb-2">
                 <label  class="form-label">CANTIDAD</label>
-                <input type="number" class="form-control text-center" id="ecantidadp">
+                <input type="number" class="form-control text-center" id="ecantidada">
             </div>
               <div>
                   <label  class="form-label">FOTO</label>
-                  <input type="file" name="efotop" class="form-control" id="efotop"  onchange="epreviewImage()">
-                  <img id="eprenda-preview" src="#" style="max-width: 100%; max-height: 140px; margin: 0 auto;">
+                  <input type="file" name="efotoa" class="form-control" id="efotoa"  onchange="epreviewImage()">
+                  <img id="ealbum-preview" src="#" style="max-width: 100%; max-height: 140px; margin: 0 auto;">
               </div>
               <div>
                 <label  class="form-label">ID_C</label>
@@ -195,9 +184,9 @@
       </div>
       <div class="modal-footer">
 
-        <input type="hidden" id="idp">
+        <input type="hidden" id="ida">
 
-          <button type="button" class="btn btn-success" onclick="actualizarPrendas()">  ACTUALIZAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 16 16">
+          <button type="button" class="btn btn-success" onclick="actualizarAlbum()">  ACTUALIZAR  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 16 16">
             <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>
             <path d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>
           </svg></button>
@@ -216,13 +205,13 @@
   <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
       <div class="modal-header">
-          <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">AGREGAR CATEGORIA</h1>
+          <h1 class="modal-title fs-5 w-100 m-auto" id="exampleModalLabel">AGREGAR CATEGORÍA</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
           <form>
               <div class="mb-2">
-                  <label  class="form-label">NOMBRE DE CATEGORIA</label>
+                  <label  class="form-label">NOMBRE DE CATEGORÍA</label>
                   <input type="text" class="form-control text-center" id="nombrec">
               </div>
           </form>                
